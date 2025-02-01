@@ -26,7 +26,7 @@ public interface EmployeeService {
 
     Object departmentEmployees(String deptName);
 
-    List<SalariedEmployees> top3HighestPaidEmployees();
+    List<SalariedEmployees> topThreeHighestPaidEmployees();
 
     Object employeesInBatch(int pageNo, int size, String sortBy, String direction);
 

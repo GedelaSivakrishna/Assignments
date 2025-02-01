@@ -1,11 +1,14 @@
-package com.app.service;
+package com.app.serviceImplementation;
 
 import com.app.Exceptions.DepartmentException;
 import com.app.Exceptions.EmployeeException;
+import com.app.constants.Constants;
 import com.app.dto.SalariedEmployees;
 import com.app.model.Department;
 import com.app.model.Employee;
 import com.app.repository.EmployeeRepo;
+import com.app.service.DepartmentService;
+import com.app.service.EmployeeService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -38,7 +41,18 @@ public class EmployeeServiceImpl implements EmployeeService {
      */
     @Override
     public Employee findEmployeeById(int empId) {
-        return employeeRepo.findById(empId).orElseThrow(() -> new EmployeeException("Invalid employee id"));
+        return employeeRepo.findById(empId).orElseThrow(() -> new EmployeeException(Constants.INVALID_EMPLOYEE_ID));
+    }
+
+    /**
+     * Checks if the Employee object is null
+     * @param employee employee object
+     * @throws EmployeeException If the employee is null throws invalid employee exception
+     */
+    public static void checkEmployee(Employee employee) {
+        if(Objects.isNull(employee)) {
+            throw new EmployeeException(Constants.INVALID_EMPLOYEE);
+        }
     }
 
     /**
@@ -48,6 +62,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      */
     @Override
     public Employee saveEmployee(Employee employee) {
+        checkEmployee(employee);
         return employeeRepo.save(employee);
     }
 
@@ -60,6 +75,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      */
     @Override
     public Employee addEmployee(Employee employee, int deptId) {
+        checkEmployee(employee);
         Department department = departmentService.findDepartmentById(deptId);
         employee.setDepartments(List.of(department));
         return saveEmployee(employee);
@@ -74,6 +90,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      */
     @Override
     public Employee updateEmployee(Employee reqEmployee, int empId) {
+        checkEmployee(reqEmployee);
         Employee employee = findEmployeeById(empId);
         // Name
         if(reqEmployee.getName() != null && !employee.getName().equals(reqEmployee.getName())) {
@@ -105,7 +122,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     public String  deleteEmployee(int empId) {
         Employee employee = findEmployeeById(empId);
         employeeRepo.delete(employee);
-        return !employeeRepo.existsById(empId) ? "Employee deleted successfully " : "Error, While deleting Employee";
+        return !employeeRepo.existsById(empId) ? Constants.EMPLOYEE_DELETE_SUCCESS : Constants.EMPLOYEE_DELETE_FAILURE;
     }
 
     /**
@@ -124,11 +141,13 @@ public class EmployeeServiceImpl implements EmployeeService {
      */
     @Override
     public Object employeesWithSalaryGreaterThan(double amount) {
-        if(amount < 0)
-            throw new EmployeeException("Enter valid amount ");
+        if(amount < 0) {
+            throw new EmployeeException(Constants.INVALID_SALARY_AMOUNT);
+        }
         List<Employee> employees = employeeRepo.findBySalaryGreaterThan(amount);
-        if(employees.isEmpty())
+        if(employees.isEmpty()) {
             return "No employees with salary greater than " + (long)amount + " found";
+        }
         return employees;
     }
 
@@ -146,7 +165,7 @@ public class EmployeeServiceImpl implements EmployeeService {
             case "M", "MONTH", "MONTHS" -> LocalDate.now().minusMonths(value);
             case "W", "WEEK", "WEEKS" -> LocalDate.now().minusWeeks(value);
             case "D", "DAY", "DAYS" -> LocalDate.now().minusDays(value);
-            default -> throw new IllegalArgumentException("Excepted Key values y,year,years | m,month,months | w,week,weeks | d,day,days but got = " + key.toUpperCase());
+            default -> throw new IllegalArgumentException(Constants.INVALID_EMPLOYEE_JOINED_IN_ARGUMENTS + " " + key.toUpperCase());
         };
         List<Employee> employees = employeeRepo.findByDateOfJoiningAfter(date);
         if(employees.isEmpty()) {
@@ -157,8 +176,9 @@ public class EmployeeServiceImpl implements EmployeeService {
                 case "D", "DAY", "DAYS" -> " days";
                 default -> "";
             };
-            if(value == 1)
+            if(value == 1) {
                 message = message.substring(0, message.length()-1);
+            }
             return message;
         }
         return employees;
@@ -182,8 +202,9 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public Object departmentEmployees(String deptName) {
         List<String> allDepartmentNames = employeeRepo.findAllDepartmentNames();
-        if(!allDepartmentNames.contains(deptName))
-            throw new DepartmentException("Invalid department name!");
+        if(!allDepartmentNames.contains(deptName)) {
+            throw new DepartmentException(Constants.INVALID_DEPARTMENT_NAME);
+        }
         List<Employee> employees = employeeRepo.departmentEmployees(deptName);
         return employees.isEmpty() ? "No employees found in " + deptName + " department" : employees;
     }
@@ -193,7 +214,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      * @return employees who are getting top 3 highest salaries
      */
     @Override
-    public List<SalariedEmployees> top3HighestPaidEmployees() {
+    public List<SalariedEmployees> topThreeHighestPaidEmployees() {
         List<SalariedEmployees> result = new ArrayList<>();
         String[] labels = {"firstHighest", "secondHighest", "thirdHighest"};
 
@@ -222,16 +243,20 @@ public class EmployeeServiceImpl implements EmployeeService {
      */
     @Override
     public Object employeesInBatch(int pageNo, int size, String sortBy, String order) {
-        if(size < 0)
-            throw new IllegalArgumentException("Size should be a positive value ");
-        if(!List.of("id", "salary", "email", "name", "dateOfJoining").contains(sortBy))
-            throw new IllegalArgumentException("Expected column names [id, name, email, salary, dataOfJoining] but got " + sortBy);
-        if(!order.equalsIgnoreCase("asc") && !order.equalsIgnoreCase("desc"))
-            throw new IllegalArgumentException("Invalid sorting order. Expected [asc, desc] but found " + order);
+        if(size < 0) {
+            throw new IllegalArgumentException(Constants.INVALID_PAGINATION_SIZE);
+        }
+        if(!List.of("id", "salary", "email", "name", "dateOfJoining").contains(sortBy)) {
+            throw new IllegalArgumentException(Constants.INVALID_PAGINATION_SORTBY_COLUMN_NAME + " " + sortBy);
+        }
+        if(!order.equalsIgnoreCase("asc") && !order.equalsIgnoreCase("desc")) {
+            throw new IllegalArgumentException(Constants.INVALID_PAGINATION_SORTING_ORDER + " " + order);
+        }
         int totalEmployees = allEmployees().size();
         int totalPages = totalEmployees / size;
-        if(totalEmployees % size != 0)
+        if(totalEmployees % size != 0) {
                 totalPages += 1;
+        }
         if(pageNo < 0 || pageNo >= totalPages) {
             throw new IllegalArgumentException("Page number should be between " + 0 + " and " + (totalPages-1));
         }
@@ -239,8 +264,9 @@ public class EmployeeServiceImpl implements EmployeeService {
                                                             Sort.by(sortBy).descending();
         Pageable pageable = PageRequest.of(pageNo, size, sort);
         Page<Employee> employees = employeeRepo.findAll(pageable);
-        if(employees.isEmpty())
-            return "No Employees found in the database ";
+        if(employees.isEmpty()) {
+            return Constants.EMPLOYEES_NOT_FOUND;
+        }
         return employees.getContent();
     }
 
@@ -253,11 +279,11 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public String incrementEmployeeSalaryBy(float percent) {
         if(percent <= 0) {
-            throw new IllegalArgumentException("Invalid! Enter a valid percent value ");
+            throw new IllegalArgumentException(Constants.INVALID_SALARY_INCREMENT_PERCENT);
         }
         int updatedRecords = employeeRepo.incrementSalaryBy(percent);
-        return updatedRecords == allEmployees().size() ? "Employees salary updated by " + percent + " % " :
-                "Error, While updating employees salary";
+        return updatedRecords == allEmployees().size() ? Constants.SALARY_INCREMENT_SUCCESS :
+                Constants.SALARY_INCREMENT_FAILURE;
     }
 
     /**
@@ -271,8 +297,9 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     @Transactional
     public Employee transferDepartment(int empId, int fromDeptId, int toDeptId) {
-        if(fromDeptId == toDeptId)
-            throw new IllegalArgumentException("Cannot transfer employee to same department ");
+        if(fromDeptId == toDeptId) {
+            throw new IllegalArgumentException(Constants.SAME_TRANSFER_DEPARTMENT_ID_ERROR);
+        }
         Employee employee = findEmployeeById(empId);
         Department fromDepartment = departmentService.findDepartmentById(fromDeptId);
         Department toDepartment = departmentService.findDepartmentById(toDeptId);
@@ -299,10 +326,12 @@ public class EmployeeServiceImpl implements EmployeeService {
     public Employee addEmployeeToDepartment(int empId, int deptId) {
         Employee employee = findEmployeeById(empId);
         Department department = departmentService.findDepartmentById(deptId);
-        if(Objects.isNull(employee.getDepartments()))
+        if(Objects.isNull(employee.getDepartments())) {
             employee.setDepartments(List.of(department));
-        else
+        }
+        else {
             employee.getDepartments().add(department);
+        }
         return saveEmployee(employee);
     }
 

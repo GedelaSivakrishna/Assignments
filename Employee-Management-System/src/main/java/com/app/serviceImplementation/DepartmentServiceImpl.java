@@ -1,18 +1,21 @@
-package com.app.service;
+package com.app.serviceImplementation;
 
 import com.app.Exceptions.DepartmentException;
+import com.app.constants.Constants;
 import com.app.model.Department;
 import com.app.repository.DepartmentRepo;
+import com.app.service.DepartmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author Gedela sivakrishna
  * @since 2025-01-30
  */
 @Service
-public class DepartmentServiceImpl implements DepartmentService{
+public class DepartmentServiceImpl implements DepartmentService {
 
     @Autowired
     private DepartmentRepo departmentRepo;
@@ -24,7 +27,18 @@ public class DepartmentServiceImpl implements DepartmentService{
      */
     @Override
     public Department findDepartmentById(int deptId) {
-        return departmentRepo.findById(deptId).orElseThrow(() -> new DepartmentException("Invalid department id!"));
+        return departmentRepo.findById(deptId).orElseThrow(() -> new DepartmentException(Constants.INVALID_DEPARTMENT_ID));
+    }
+
+    /**
+     * Checks if the Department object is null
+     * @param department department object to check
+     * @throws DepartmentException if department object is null throws Invalid Department exception
+     */
+    public static void checkdepartment(Department department) {
+        if(Objects.isNull(department)) {
+            throw new DepartmentException(Constants.INVALID_DEPARTMENT);
+        }
     }
 
     /**
@@ -34,6 +48,7 @@ public class DepartmentServiceImpl implements DepartmentService{
      */
     @Override
     public Department saveDepartment(Department department) {
+        checkdepartment(department);
         return departmentRepo.save(department);
     }
 
@@ -44,6 +59,7 @@ public class DepartmentServiceImpl implements DepartmentService{
      */
     @Override
     public Department addDepartment(Department department) {
+        checkdepartment(department);
         return saveDepartment(department);
     }
 
@@ -56,8 +72,8 @@ public class DepartmentServiceImpl implements DepartmentService{
     @Override
     public String deleteDepartment(int deptId) {
         departmentRepo.delete(findDepartmentById(deptId));
-        return !departmentRepo.existsById(deptId) ? "Department deleted successfully " :
-                "Error, while deleting department";
+        return !departmentRepo.existsById(deptId) ? Constants.DEPARTMENT_DELETED_SUCCESS :
+                Constants.DEPARTMENT_DELETED_FAILURE;
     }
 
     /**

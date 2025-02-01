@@ -70,7 +70,7 @@ public class EmployeeController {
 
     @GetMapping("employees/top3")
     public ResponseEntity<List<SalariedEmployees>> top3HighestPaidEmployees() {
-        return new ResponseEntity<>(employeeService.top3HighestPaidEmployees(), HttpStatus.OK);
+        return new ResponseEntity<>(employeeService.topThreeHighestPaidEmployees(), HttpStatus.OK);
     }
 
     @GetMapping("employees/batch")
