@@ -3,18 +3,25 @@ package com.app.serviceImplementation;
 import com.app.Exceptions.DepartmentException;
 import com.app.Exceptions.EmployeeException;
 import com.app.constants.Constants;
+import com.app.dto.EmployeeDto;
 import com.app.dto.SalariedEmployees;
 import com.app.model.Department;
 import com.app.model.Employee;
 import com.app.repository.EmployeeRepo;
 import com.app.service.DepartmentService;
 import com.app.service.EmployeeService;
+import com.app.specifications.EmployeeSpecification;
 import jakarta.transaction.Transactional;
+import org.modelmapper.ModelMapper;
+import org.openapitools.client.ApiClient;
+import org.openapitools.client.ApiException;
+import org.openapitools.client.api.EmployeeControllerApi;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -32,6 +39,18 @@ public class EmployeeServiceImpl implements EmployeeService {
     private EmployeeRepo employeeRepo;
     @Autowired
     private DepartmentService departmentService;
+    @Autowired
+    private ModelMapper mapper;
+    @Autowired
+    private EmployeeSpecification employeeSpecification;
+
+    private final EmployeeControllerApi employeeControllerApi;
+
+    @Autowired
+    public EmployeeServiceImpl(ApiClient apiClient) {
+        apiClient.setBasePath("http://localhost:8080");
+        this.employeeControllerApi = new EmployeeControllerApi(apiClient);
+    }
 
     /**
      * Checks whether the employee with the given id exists in database
@@ -44,14 +63,19 @@ public class EmployeeServiceImpl implements EmployeeService {
         return employeeRepo.findById(empId).orElseThrow(() -> new EmployeeException(Constants.INVALID_EMPLOYEE_ID));
     }
 
+    @Override
+    public List<org.openapitools.client.model.Employee> getEmployees() throws ApiException {
+        return employeeControllerApi.allEmployees();
+    }
+
     /**
      * Checks if the Employee object is null
-     * @param employee employee object
+     * @param employeeDto employeeDto object
      * @throws EmployeeException If the employee is null throws invalid employee exception
      */
-    public static void checkEmployee(Employee employee) {
-        if(Objects.isNull(employee)) {
-            throw new EmployeeException(Constants.INVALID_EMPLOYEE);
+    public static void checkEmployee(EmployeeDto employeeDto) {
+        if(Objects.isNull(employeeDto)) {
+            throw new EmployeeException(Constants.INVALID_EMPLOYEE_DTO);
         }
     }
 
@@ -62,20 +86,20 @@ public class EmployeeServiceImpl implements EmployeeService {
      */
     @Override
     public Employee saveEmployee(Employee employee) {
-        checkEmployee(employee);
         return employeeRepo.save(employee);
     }
 
     /***
      * Creates a new Employee
-     * @param employee the employee details  to create a new employee
+     * @param employeeDto the employeeDto details  to create a new employee
      * @param deptId the unique id of the department
      * @return the newly created employee
      * @throws DepartmentException if department with the given id is not found
      */
     @Override
-    public Employee addEmployee(Employee employee, int deptId) {
-        checkEmployee(employee);
+    public Employee addEmployee(EmployeeDto employeeDto, int deptId) {
+        checkEmployee(employeeDto);
+        Employee employee = mapper.map(employeeDto, Employee.class);
         Department department = departmentService.findDepartmentById(deptId);
         employee.setDepartments(List.of(department));
         return saveEmployee(employee);
@@ -83,14 +107,15 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     /**
      * Updates the employee with the given information
-     * @param reqEmployee the details of the employee which need to be updated
+     * @param employeeDto the details of the employee which need to be updated
      * @param empId  the unique id of the employee
      * @return the updated employee
      * @throws EmployeeException if the employee with the given id is not found
      */
     @Override
-    public Employee updateEmployee(Employee reqEmployee, int empId) {
-        checkEmployee(reqEmployee);
+    public Employee updateEmployee(EmployeeDto employeeDto, int empId) {
+        checkEmployee(employeeDto);
+        Employee reqEmployee = mapper.map(employeeDto, Employee.class);
         Employee employee = findEmployeeById(empId);
         // Name
         if(reqEmployee.getName() != null && !employee.getName().equals(reqEmployee.getName())) {
@@ -353,5 +378,13 @@ public class EmployeeServiceImpl implements EmployeeService {
         employee.getDepartments().remove(department);
         departmentService.saveDepartment(department);
         return saveEmployee(employee);
+    }
+
+    @Override
+    public List<Employee> findAllEmployeesInDepartmentWithSalaryGreaterThanAndJoinedAfter(String departmentName, long salary, LocalDate date) {
+        Specification<Employee> specification = Specification.where(employeeSpecification.worksInDepartment(departmentName))
+                .and(employeeSpecification.hasSalaryGreaterThan(salary))
+                .and(employeeSpecification.hiredAfter(date));
+        return employeeRepo.findAll(specification);
     }
 }

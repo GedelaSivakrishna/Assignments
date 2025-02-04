@@ -25,10 +25,8 @@ public class Department {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    @NotBlank(message = "Please enter the department name ")
     @Column(unique = true)
     private String name;
-    @NotBlank(message = "Please enter the department location")
     private String location;
     @ManyToMany(mappedBy = "departments")
     @JsonIgnore

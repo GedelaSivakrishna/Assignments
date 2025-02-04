@@ -2,9 +2,11 @@ package com.app.serviceImplementation;
 
 import com.app.Exceptions.DepartmentException;
 import com.app.constants.Constants;
+import com.app.dto.DepartmentDto;
 import com.app.model.Department;
 import com.app.repository.DepartmentRepo;
 import com.app.service.DepartmentService;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -19,6 +21,8 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     @Autowired
     private DepartmentRepo departmentRepo;
+    @Autowired
+    private ModelMapper mapper;
 
     /**
      * Find out the department with given id
@@ -31,13 +35,13 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
     /**
-     * Checks if the Department object is null
-     * @param department department object to check
-     * @throws DepartmentException if department object is null throws Invalid Department exception
+     * Checks if the DepartmentDto object is null
+     * @param departmentDto departmentDto object to check
+     * @throws DepartmentException if departmentDto object is null throws Invalid DepartmentDto exception
      */
-    public static void checkdepartment(Department department) {
-        if(Objects.isNull(department)) {
-            throw new DepartmentException(Constants.INVALID_DEPARTMENT);
+    public static void checkDepartment(DepartmentDto departmentDto) {
+        if(Objects.isNull(departmentDto)) {
+            throw new DepartmentException(Constants.INVALID_DEPARTMENT_DTO);
         }
     }
 
@@ -48,18 +52,18 @@ public class DepartmentServiceImpl implements DepartmentService {
      */
     @Override
     public Department saveDepartment(Department department) {
-        checkdepartment(department);
         return departmentRepo.save(department);
     }
 
     /**
      * Creates a new Department
-     * @param department  department details which need to be created
+     * @param departmentDto  department details which need to be created
      * @return the newly created department
      */
     @Override
-    public Department addDepartment(Department department) {
-        checkdepartment(department);
+    public Department addDepartment(DepartmentDto departmentDto) {
+        checkDepartment(departmentDto);
+        Department department = mapper.map(departmentDto, Department.class);
         return saveDepartment(department);
     }
 

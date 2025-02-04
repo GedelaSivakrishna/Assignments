@@ -2,7 +2,8 @@ package com.app.constants;
 
 public class Constants {
     public static final String INVALID_EMPLOYEE_ID = "Invalid employee id";
-    public static final String INVALID_EMPLOYEE = "Employee object is null";
+//    public static final String INVALID_EMPLOYEE = "Employee object is null";
+    public static final String INVALID_EMPLOYEE_DTO = "EmployeeDto object is null";
     public static final String EMPLOYEE_DELETE_SUCCESS = "Employee deleted successfully";
     public static final String EMPLOYEE_DELETE_FAILURE = "Error while deleting employee";
     public static final String INVALID_SALARY_AMOUNT = "Invalid salary";
@@ -16,7 +17,8 @@ public class Constants {
     public static final String SALARY_INCREMENT_FAILURE = "Error, While updating employees salary";
     public static final String SAME_TRANSFER_DEPARTMENT_ID_ERROR = "Cannot transfer employee to same department";
     public static final String INVALID_DEPARTMENT_ID = "Invalid department id";
-    public static final String INVALID_DEPARTMENT = "Department object is null";
+//    public static final String INVALID_DEPARTMENT = "Department object is null";
+    public static final String INVALID_DEPARTMENT_DTO = "DepartmentDto object is null";
     public static final String INVALID_DEPARTMENT_NAME = "Invalid department name";
     public static final String DEPARTMENT_DELETED_SUCCESS = "Department deleted successfully";
     public static final String DEPARTMENT_DELETED_FAILURE = "Error, while deleting department";

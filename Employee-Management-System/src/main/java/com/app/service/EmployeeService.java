@@ -1,18 +1,24 @@
 package com.app.service;
 
+import com.app.dto.EmployeeDto;
 import com.app.dto.SalariedEmployees;
 import com.app.model.Employee;
+import org.openapitools.client.ApiException;
+
+import java.time.LocalDate;
 import java.util.List;
 
 public interface EmployeeService {
 
     Employee findEmployeeById(int empId);
+    // fetch the data using Client API
+    List<org.openapitools.client.model.Employee> getEmployees() throws ApiException;
 
     Employee saveEmployee(Employee employee);
 
-    Employee addEmployee(Employee employee, int deptId);
+    Employee addEmployee(EmployeeDto employeeDto, int deptId);
 
-    Employee updateEmployee(Employee employee, int empId);
+    Employee updateEmployee(EmployeeDto employeeDto, int empId);
 
     String deleteEmployee(int empId);
 
@@ -37,5 +43,7 @@ public interface EmployeeService {
     Employee addEmployeeToDepartment(int empId, int deptId);
 
     Employee removeEmployeeFromDepartment(int empId, int deptId);
+
+    List<Employee> findAllEmployeesInDepartmentWithSalaryGreaterThanAndJoinedAfter(String departmentName, long salary, LocalDate date);
 
 }

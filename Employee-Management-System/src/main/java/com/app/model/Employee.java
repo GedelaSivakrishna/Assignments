@@ -28,15 +28,10 @@ public class Employee {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    @NotBlank(message = "Please enter the employee name ")
     private String name;
-    @NotBlank(message = "Please enter the email ")
-    @Email(message = "Invalid email!")
     @Column(unique = true)
     private String email;
-    @Positive(message = "Salary must be positive number")
     private long salary;
-    @NotNull(message = "Please enter the employee date of joining ")
     private LocalDate dateOfJoining;
     @ManyToMany
     private List<Department> departments;
