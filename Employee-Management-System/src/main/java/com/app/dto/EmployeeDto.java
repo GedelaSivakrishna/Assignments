@@ -11,6 +11,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -30,4 +31,9 @@ public class EmployeeDto {
     @NotNull(message = "Please enter the employee date of joining ")
     @Schema(description = "Employee joining date",example = "2025-01-06")
     private LocalDate dateOfJoining;
+    @Schema(description = "Department Ids", example = "1,2,3")
+    private List<Integer> deptIds;
+//    @NotBlank(message = "Please enter language preference")
+//    @Schema(description = "Employee language preference", example = "EN for English")
+//    private String language;
 }

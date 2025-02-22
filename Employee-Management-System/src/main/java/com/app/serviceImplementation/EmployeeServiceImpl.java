@@ -1,9 +1,12 @@
 package com.app.serviceImplementation;
 
 import com.app.Exceptions.DepartmentException;
+import com.app.Exceptions.DuplicateEmailException;
 import com.app.Exceptions.EmployeeException;
 import com.app.constants.Constants;
+import com.app.dto.DepartmentInfoDto;
 import com.app.dto.EmployeeDto;
+import com.app.dto.EmployeeEmailDto;
 import com.app.dto.SalariedEmployees;
 import com.app.model.Department;
 import com.app.model.Employee;
@@ -16,6 +19,8 @@ import org.modelmapper.ModelMapper;
 import org.openapitools.client.ApiClient;
 import org.openapitools.client.ApiException;
 import org.openapitools.client.api.EmployeeControllerApi;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -25,8 +30,11 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author Gedela sivakrishna
@@ -45,6 +53,8 @@ public class EmployeeServiceImpl implements EmployeeService {
     private EmployeeSpecification employeeSpecification;
 
     private final EmployeeControllerApi employeeControllerApi;
+
+    private static final Logger logger = LoggerFactory.getLogger(EmployeeServiceImpl.class);
 
     @Autowired
     public EmployeeServiceImpl(ApiClient apiClient) {
@@ -92,16 +102,23 @@ public class EmployeeServiceImpl implements EmployeeService {
     /***
      * Creates a new Employee
      * @param employeeDto the employeeDto details  to create a new employee
-     * @param deptId the unique id of the department
+     * @param deptIds List of department ids
      * @return the newly created employee
      * @throws DepartmentException if department with the given id is not found
      */
     @Override
-    public Employee addEmployee(EmployeeDto employeeDto, int deptId) {
+    public Employee addEmployee(EmployeeDto employeeDto, List<Integer> deptIds) {
         checkEmployee(employeeDto);
+        if(employeeRepo.findByEmail(employeeDto.getEmail()).isPresent()) {
+            logger.warn("Duplicate email detected: {}", employeeDto.getEmail());
+            throw new DuplicateEmailException("Employee already exists with this email");
+        }
         Employee employee = mapper.map(employeeDto, Employee.class);
-        Department department = departmentService.findDepartmentById(deptId);
-        employee.setDepartments(List.of(department));
+        List<Department> departments = new ArrayList<>();
+        for(int deptId : deptIds) {
+            departments.add(departmentService.findDepartmentById(deptId));
+        }
+            employee.setDepartments(departments);
         return saveEmployee(employee);
     }
 
@@ -115,26 +132,48 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public Employee updateEmployee(EmployeeDto employeeDto, int empId) {
         checkEmployee(employeeDto);
-        Employee reqEmployee = mapper.map(employeeDto, Employee.class);
+//        Employee reqEmployee = mapper.map(employeeDto, Employee.class);
         Employee employee = findEmployeeById(empId);
         // Name
-        if(reqEmployee.getName() != null && !employee.getName().equals(reqEmployee.getName())) {
-            employee.setName(reqEmployee.getName());
+        if(!Objects.isNull(employeeDto.getName()) && !employee.getName().equals(employeeDto.getName())) {
+            employee.setName(employeeDto.getName());
         }
         // Email
-        if(reqEmployee.getEmail() != null && !employee.getEmail().equals(reqEmployee.getEmail())) {
-            String email = reqEmployee.getEmail();
+        if(!Objects.isNull(employeeDto.getEmail()) && !employee.getEmail().equals(employeeDto.getEmail())) {
+            String email = employeeDto.getEmail();
             employee.setEmail(email);
         }
         // Salary
-        if(reqEmployee.getSalary() != 0 && employee.getSalary() != reqEmployee.getSalary()) {
-            employee.setSalary(reqEmployee.getSalary());
+        if(employeeDto.getSalary() != 0 && employee.getSalary() != employeeDto.getSalary()) {
+            employee.setSalary(employeeDto.getSalary());
         }
         // Date Of Joining
-        if(reqEmployee.getDateOfJoining() != null && !employee.getDateOfJoining().equals(reqEmployee.getDateOfJoining())) {
-            employee.setDateOfJoining(reqEmployee.getDateOfJoining());
+        if(!Objects.isNull(employeeDto.getDateOfJoining()) && !employee.getDateOfJoining().equals(employeeDto.getDateOfJoining())) {
+            employee.setDateOfJoining(employeeDto.getDateOfJoining());
+        }
+        Set<Integer> existingDeptIds = employee.getDepartments().stream().map(Department::getId).collect(Collectors.toSet());
+        Set<Integer> newDeptids = new HashSet<>(employeeDto.getDeptIds());
+        // Departments
+        if(!employeeDto.getDeptIds().isEmpty() && !existingDeptIds.equals(newDeptids) ) {
+            // New Department Ids to add
+            Set<Integer> deptIdsToAdd = newDeptids.stream().filter(deptId -> !existingDeptIds.contains(deptId))
+                                                                                    .collect(Collectors.toSet());
+            // Old Department Ids to remove
+            Set<Integer> deptIdsToRemove = existingDeptIds.stream().filter(deptId -> !newDeptids.contains(deptId))
+                                                                                    .collect(Collectors.toSet());
+            employee.getDepartments().addAll(getDepartmentsWithIds(deptIdsToAdd));
+            employee.getDepartments().removeAll(getDepartmentsWithIds(deptIdsToRemove));
         }
         return saveEmployee(employee);
+    }
+
+    // Helper function
+    public  List<Department> getDepartmentsWithIds(Set<Integer> deptIds) {
+        List<Department> departmentsList = new ArrayList<>();
+        for(int deptId : deptIds) {
+            departmentsList.add(departmentService.findDepartmentById(deptId));
+        }
+        return departmentsList;
     }
 
     /**
@@ -214,8 +253,16 @@ public class EmployeeServiceImpl implements EmployeeService {
      * @return  object which has the count of employees in each department
      */
     @Override
-    public List<Object> employeesInDepartment() {
-        return employeeRepo.employeesInDepartment();
+    public Page<DepartmentInfoDto> employeesInDepartment(int pageNo, int size) {
+        Pageable pageable = PageRequest.of(pageNo, size);
+        Page<DepartmentInfoDto> departmentInfoDtoPage = employeeRepo.employeesInDepartment(pageable);
+
+        // Set Employees list for each department
+        departmentInfoDtoPage.forEach(dto -> {
+                List<EmployeeEmailDto> employees = employeeRepo.findEmployeeEmailsByDepartmentId(dto.getId());
+                 dto.setEmployees(employees);
+                });
+        return departmentInfoDtoPage;
     }
 
     /**
@@ -267,7 +314,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      * @throws IllegalArgumentException if any parameter values doesn't satisfy the required conditions
      */
     @Override
-    public Object employeesInBatch(int pageNo, int size, String sortBy, String order) {
+    public Page<Employee> employeesInBatch(int pageNo, int size, String sortBy, String order) {
         if(size < 0) {
             throw new IllegalArgumentException(Constants.INVALID_PAGINATION_SIZE);
         }
@@ -290,9 +337,9 @@ public class EmployeeServiceImpl implements EmployeeService {
         Pageable pageable = PageRequest.of(pageNo, size, sort);
         Page<Employee> employees = employeeRepo.findAll(pageable);
         if(employees.isEmpty()) {
-            return Constants.EMPLOYEES_NOT_FOUND;
+            throw new EmployeeException(Constants.EMPLOYEES_NOT_FOUND);
         }
-        return employees.getContent();
+        return employees;
     }
 
     /**
@@ -386,5 +433,14 @@ public class EmployeeServiceImpl implements EmployeeService {
                 .and(employeeSpecification.hasSalaryGreaterThan(salary))
                 .and(employeeSpecification.hiredAfter(date));
         return employeeRepo.findAll(specification);
+    }
+
+    @Override
+    public Employee getEmployeeUsingStoredProcedure(int empId) {
+       Employee employee = employeeRepo.findEmployeeUsingStoredProcedure(empId);
+        if(Objects.isNull(employee)) {
+            throw new EmployeeException("Employee not found with id: " + empId);
+        }
+        return employee;
     }
 }

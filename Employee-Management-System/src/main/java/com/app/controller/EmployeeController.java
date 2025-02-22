@@ -1,5 +1,6 @@
 package com.app.controller;
 
+import com.app.dto.DepartmentInfoDto;
 import com.app.dto.EmployeeDto;
 import com.app.dto.SalariedEmployees;
 import com.app.model.Employee;
@@ -13,8 +14,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import org.openapitools.client.ApiException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,6 +31,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:5173")
 public class EmployeeController {
 
     @Autowired
@@ -45,9 +49,8 @@ public class EmployeeController {
             required = true,
             content = @Content(
                     schema = @Schema(implementation = EmployeeDto.class)
-            )) @Valid @RequestBody EmployeeDto employeeDto,
-           @Parameter(description = "Id of the department") @RequestParam int deptId) {
-        Employee savedEmployee = employeeService.addEmployee(employeeDto, deptId);
+            )) @Valid @RequestBody EmployeeDto employeeDto) {
+        Employee savedEmployee = employeeService.addEmployee(employeeDto, employeeDto.getDeptIds());
         return new ResponseEntity<>(savedEmployee, HttpStatus.CREATED);
     }
 
@@ -98,8 +101,10 @@ public class EmployeeController {
 
     @Operation(summary = "Department employees count")
     @GetMapping("employees/department")
-    public ResponseEntity<List<Object>> employeesInDepartment() {
-        return new ResponseEntity<>(employeeService.employeesInDepartment(), HttpStatus.OK);
+    public ResponseEntity<Page<DepartmentInfoDto>> employeesInDepartment(
+            @RequestParam(defaultValue = "0") int pageNo,
+            @RequestParam(defaultValue = "5") int size) {
+        return new ResponseEntity<>(employeeService.employeesInDepartment(pageNo, size), HttpStatus.OK);
     }
 
     @Operation(summary = "Department employees")
@@ -117,13 +122,15 @@ public class EmployeeController {
 
     @Operation(summary = "Employees in Batch")
     @GetMapping("employees/batch")
-    public ResponseEntity<?> employeesInBatch(
-            @Parameter(description = "Page number") @RequestParam(defaultValue = "0") int pageNo,
-            @Parameter(description = "Page size") @RequestParam(defaultValue = "20") int size,
-            @Parameter(description = "Column name by which employees need to be sorted") @RequestParam(defaultValue = "salary") String sortBy,
+    public ResponseEntity<Page<Employee>> employeesInBatch(
+            @Parameter(description = "Page number") @RequestParam int pageNo,
+            @Parameter(description = "Page size") @RequestParam int size,
+            @Parameter(description = "Column name by which employees need to be sorted") @RequestParam(defaultValue = "name") String sortBy,
             @Parameter(description = "Id of the employee") @RequestParam(defaultValue = "asc") String order
     ) {
-        Object response = employeeService.employeesInBatch(pageNo, size, sortBy, order);
+        System.out.println("Requested Page No: " + pageNo);
+        System.out.println("Requested Page size: " + size);
+        Page<Employee> response = employeeService.employeesInBatch(pageNo, size, sortBy, order);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
@@ -173,6 +180,11 @@ public class EmployeeController {
             @Parameter(description = "Filtering Joining Date", example = "2025-01-01") @RequestParam LocalDate date) {
         return new ResponseEntity<>(employeeService.findAllEmployeesInDepartmentWithSalaryGreaterThanAndJoinedAfter(dname, salary,date),
                 HttpStatus.OK);
+    }
+
+    @GetMapping("/employee/stp/{empId}")
+    public ResponseEntity<Employee> getEmployeeFromStoredProcedure(@PathVariable int empId) {
+        return new ResponseEntity<>(employeeService.getEmployeeUsingStoredProcedure(empId), HttpStatus.OK);
     }
 
 }

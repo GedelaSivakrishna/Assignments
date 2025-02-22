@@ -1,9 +1,11 @@
 package com.app.service;
 
+import com.app.dto.DepartmentInfoDto;
 import com.app.dto.EmployeeDto;
 import com.app.dto.SalariedEmployees;
 import com.app.model.Employee;
 import org.openapitools.client.ApiException;
+import org.springframework.data.domain.Page;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -16,7 +18,7 @@ public interface EmployeeService {
 
     Employee saveEmployee(Employee employee);
 
-    Employee addEmployee(EmployeeDto employeeDto, int deptId);
+    Employee addEmployee(EmployeeDto employeeDto, List<Integer> deptIds);
 
     Employee updateEmployee(EmployeeDto employeeDto, int empId);
 
@@ -28,13 +30,13 @@ public interface EmployeeService {
 
     Object employeesJoinedIn(String key, int value);
 
-    List<Object> employeesInDepartment();
+    Page<DepartmentInfoDto> employeesInDepartment(int pageNo, int size);
 
     Object departmentEmployees(String deptName);
 
     List<SalariedEmployees> topThreeHighestPaidEmployees();
 
-    Object employeesInBatch(int pageNo, int size, String sortBy, String direction);
+    Page<Employee> employeesInBatch(int pageNo, int size, String sortBy, String direction);
 
     String incrementEmployeeSalaryBy(float percent);
 
@@ -45,5 +47,7 @@ public interface EmployeeService {
     Employee removeEmployeeFromDepartment(int empId, int deptId);
 
     List<Employee> findAllEmployeesInDepartmentWithSalaryGreaterThanAndJoinedAfter(String departmentName, long salary, LocalDate date);
+
+    Employee getEmployeeUsingStoredProcedure(int empId);
 
 }

@@ -3,14 +3,25 @@ package com.app.serviceImplementation;
 import com.app.Exceptions.DepartmentException;
 import com.app.constants.Constants;
 import com.app.dto.DepartmentDto;
+import com.app.dto.UpdateDepartmentDto;
 import com.app.model.Department;
+import com.app.model.Employee;
 import com.app.repository.DepartmentRepo;
 import com.app.service.DepartmentService;
+import jakarta.persistence.EntityManager;
+import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author Gedela sivakrishna
@@ -23,6 +34,8 @@ public class DepartmentServiceImpl implements DepartmentService {
     private DepartmentRepo departmentRepo;
     @Autowired
     private ModelMapper mapper;
+    @Autowired
+    private EntityManager entityManager;
 
     /**
      * Find out the department with given id
@@ -67,6 +80,32 @@ public class DepartmentServiceImpl implements DepartmentService {
         return saveDepartment(department);
     }
 
+    @Override
+    @Transactional
+    public Department updateDepartment(UpdateDepartmentDto updateDepartmentDto, int deptId) {
+       Department department = findDepartmentById(deptId);
+       if(!Objects.isNull(updateDepartmentDto.getName()) && !department.getName().equals(updateDepartmentDto.getName())) {
+           department.setName(updateDepartmentDto.getName());
+       }
+       if(!Objects.isNull(updateDepartmentDto.getLocation()) && !department.getLocation().equals(updateDepartmentDto.getLocation())) {
+           department.setLocation(updateDepartmentDto.getLocation());
+       }
+
+       if(!Objects.isNull(updateDepartmentDto.getEmpIds()) && !updateDepartmentDto.getEmpIds().isEmpty()) {
+           System.out.println("Inside Update Department Remove employees logic");
+           // Find the existing employees who need to be removed
+           List<Employee> employeesToRemove = department.getEmployees().stream().filter(emp -> !updateDepartmentDto.getEmpIds().contains(emp.getId()))
+                                                                     .toList();
+           // Remove this particular department from all the Employees who need to be removed
+           for(Employee employee : employeesToRemove) {
+               employee.getDepartments().remove(department);
+                entityManager.merge(employee);
+           }
+           department.getEmployees().removeAll(employeesToRemove);
+       }
+        return departmentRepo.save(department);
+    }
+
     /**
      * Deletes the department
      * @param deptId the unique id of the department
@@ -85,8 +124,10 @@ public class DepartmentServiceImpl implements DepartmentService {
      * @return the list of departments
      */
     @Override
-    public List<Department> allDepartments() {
-        return departmentRepo.findAll();
+    public Page<Department> allDepartments(int pageNo, int size) {
+        Pageable pageable = PageRequest.of(pageNo, size);
+        Page<Department> page = departmentRepo.findAll(pageable);
+        return page;
     }
 
 }
