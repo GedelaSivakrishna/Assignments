@@ -1,5 +1,6 @@
 package com.app.Exceptions;
 
+import feign.FeignException;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -53,6 +54,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(InvalidIdException.class)
     public ResponseEntity<String> handleInvalidIdException(InvalidIdException e) {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(FeignException.class)
+    public ResponseEntity<String> handleFeignException(FeignException e) {
+        return new ResponseEntity<>(e.contentUTF8(), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(Exception.class)
