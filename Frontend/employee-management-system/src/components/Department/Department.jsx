@@ -1,5 +1,4 @@
-import React, { lazy, Suspense, useEffect, useState } from "react";
-import EmployeeModal from "./EmployeeModal";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import Box from "@mui/material/Box";
 import Table from "@mui/material/Table";
@@ -12,11 +11,10 @@ import TableRow from "@mui/material/TableRow";
 import TableSortLabel from "@mui/material/TableSortLabel";
 import Paper from "@mui/material/Paper";
 import { visuallyHidden } from "@mui/utils";
+import DepartmentModal from "./DepartmentModal";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchEmployeesInBatch } from "../redux/Employee/Action";
-import Loader from "./Loader";
+import {fetchDepartmentsInBatch } from "../../redux/Department/Action";
 
-// Function to sort the columns
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
     return -1;
@@ -42,26 +40,20 @@ const headCells = [
     label: "Name",
   },
   {
-    id: "email",
+    id: "location",
     numeric: false,
     disablePadding: false,
-    label: "Email",
+    label: "Location",
   },
   {
-    id: "dateOfJoining",
+    id: "employeesCount",
     numeric: false,
     disablePadding: false,
-    label: "Date of Joining",
-  },
-  {
-    id: "salary",
-    numeric: true,
-    disablePadding: false,
-    label: "Salary",
+    label: "Employees",
   },
 ];
 
-function EmployeeTableHead(props) {
+function DepartmentTableHead(props) {
   const {
     onSelectAllClick,
     order,
@@ -104,7 +96,7 @@ function EmployeeTableHead(props) {
   );
 }
 
-EmployeeTableHead.propTypes = {
+DepartmentTableHead.propTypes = {
   numSelected: PropTypes.number.isRequired,
   onRequestSort: PropTypes.func.isRequired,
   onSelectAllClick: PropTypes.func.isRequired,
@@ -113,29 +105,18 @@ EmployeeTableHead.propTypes = {
   rowCount: PropTypes.number.isRequired,
 };
 
-export default function EmployeeTable() {
-  const [openEmployeeModal, setOpenEmployeeModal] = useState(false);
+export default function DepartmentTable() {
+  const [openDepartmentModal, setOpenDepartmentModal] = useState(false);
   const [order, setOrder] = React.useState("asc");
   const [orderBy, setOrderBy] = React.useState("name");
   const [selected, setSelected] = React.useState([]);
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const dispatch = useDispatch();
-  const employees = useSelector((store) => store.employee.employees);
-  const totalEmployeesCount = useSelector(
-    (store) => store.employee.totalEmployeesCount
-  );
-  // When the below states update, fetch employee details again
-  const createdEmployee = useSelector(
-    (store) => store.employee?.createdEmployee
-  );
-  const updatedEmployee = useSelector(
-    (store) => store.employee?.updatedEmployee
-  );
-  const deleteEmployeeStatus = useSelector(
-    (store) => store.employee?.deleteEmployeeStatus
-  );
+  const departments = useSelector((store) => store.department.departments);
+  const totalDepartmentCount = useSelector((store) => store.department.totalDepartmentCount);
+  // When the below states updates from store, fetch the department details again
   const updatedDepartment = useSelector(
     (store) => store.department?.updatedDepartment
   );
@@ -145,28 +126,32 @@ export default function EmployeeTable() {
   const deleteDepartmentStatus = useSelector(
     (store) => store.department?.deleteDepartmentStatus
   );
-  const [currRow, setCurrRow] = useState({
-    name: "",
-    email: "",
-    salary: "",
-    dateOfJoining: "",
-  });
+  const createdEmployee = useSelector(
+    (store) => store.employee?.createdEmployee
+  );
+  const updatedEmployee = useSelector(
+    (store) => store.employee?.updatedEmployee
+  );
+  const deleteEmployeeStatus = useSelector(
+    (store) => store.employee?.deleteEmployeeStatus
+  );
+  const [currRow, setCurrRow] = useState();
 
   useEffect(() => {
     const reqData = {
       pageNo: page,
       size: rowsPerPage,
-    };
-    dispatch(fetchEmployeesInBatch(reqData));
+    }
+    dispatch(fetchDepartmentsInBatch(reqData));
   }, [
-    createdEmployee,
-    updatedEmployee,
-    deleteEmployeeStatus,
     createdDepartment,
     updatedDepartment,
     deleteDepartmentStatus,
+    createdEmployee,
+    updatedEmployee,
+    deleteEmployeeStatus,
     page,
-    rowsPerPage,
+    rowsPerPage
   ]);
 
   const handleRequestSort = (event, property) => {
@@ -189,22 +174,24 @@ export default function EmployeeTable() {
   };
 
   const handleChangeRowsPerPage = (event) => {
-    console.log("Change rows per page function value", event.target.value);
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
 
   // Avoid a layout jump when reaching the last page with empty rows.
   // const emptyRows =
-  //   page > 0 ? Math.max(0, (1 + page) * rowsPerPage - employees?.length) : 0;
+  //   page > 0
+  //     ? Math.max(0, (1 + page) * rowsPerPage - departments?.length)
+  //     : 0;
 
-  const visibleRows = React.useMemo(() => {
-    if (!employees || employees.length === 0) return [];
-    return [...employees].sort(getComparator(order, orderBy));
-  }, [employees, order, orderBy]);
+  const visibleRows = React.useMemo(
+    () => {
+      if(!departments || departments.length === 0) return [];
+      return [...departments].sort(getComparator(order, orderBy))
+    }, [departments, order, orderBy]);
 
   return (
-    <div className="flex min-h-screen justify-center items-center bg-gray-50 py-14">
+    <div className="min-h-screen flex justify-center items-center bg-gray-50 py-14">
       <Box sx={{ width: "80%" }}>
         <Paper
           sx={{
@@ -213,17 +200,21 @@ export default function EmployeeTable() {
             boxShadow: "rgba(0, 0, 0, 0.24) 0px 3px 8px;",
           }}
         >
-          {/* <EmployeeTableToolbar numSelected={selected.length} /> */}
+          {/* <DepartmentTableToolbar numSelected={selected.length} /> */}
           <TableContainer sx={{ minHeight: 350 }}>
-            {visibleRows ? (
-              <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
-                <EmployeeTableHead
+            {visibleRows && (
+              <Table
+                sx={{ minWidth: 750 }}
+                aria-labelledby="tableTitle"
+                size={dense ? "small" : "medium"}
+              >
+                <DepartmentTableHead
                   numSelected={selected.length}
                   order={order}
                   orderBy={orderBy}
                   onSelectAllClick={handleSelectAllClick}
                   onRequestSort={handleRequestSort}
-                  rowCount={employees.length}
+                  rowCount={departments?.length}
                 />
                 <TableBody>
                   {visibleRows.map((row, index) => {
@@ -234,7 +225,7 @@ export default function EmployeeTable() {
                       <TableRow
                         hover
                         onClick={() => {
-                          setOpenEmployeeModal(true);
+                          setOpenDepartmentModal(true);
                           setCurrRow(row);
                         }}
                         role="checkbox"
@@ -253,25 +244,22 @@ export default function EmployeeTable() {
                         >
                           {row.name}
                         </TableCell>
-                        <TableCell align="center">{row.email}</TableCell>
+                        <TableCell align="center">{row.location}</TableCell>
                         <TableCell align="center">
-                          {row.dateOfJoining}
+                          {row.employeesCount}
                         </TableCell>
-                        <TableCell align="center">{row.salary}</TableCell>
                       </TableRow>
                     );
                   })}
-
+  
                 </TableBody>
               </Table>
-            ) : (
-              <Loader/>
             )}
           </TableContainer>
           <TablePagination
-            rowsPerPageOptions={[5, 10, 20]}
+            rowsPerPageOptions={[5, 10, 25]}
             component="div"
-            count={totalEmployeesCount}
+            count={totalDepartmentCount}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}
@@ -279,12 +267,12 @@ export default function EmployeeTable() {
           />
         </Paper>
       </Box>
-      
-        <EmployeeModal
-          open={openEmployeeModal}
-          setOpenModal={setOpenEmployeeModal}
-          row={currRow}
-        />
+
+      <DepartmentModal
+        open={openDepartmentModal}
+        setOpenModal={setOpenDepartmentModal}
+        row={currRow}
+      />
     </div>
   );
 }

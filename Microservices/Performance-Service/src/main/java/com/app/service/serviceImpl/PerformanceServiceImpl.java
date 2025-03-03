@@ -20,6 +20,13 @@ public class PerformanceServiceImpl implements PerformanceService {
     @Autowired
     private ModelMapper mapper;
 
+    /***
+     * Method to create performance for an employee
+     * @param employeeId id of the employee
+     * @param performanceDto this dto contains the performance information like rating, feedback, week Id
+     * @return the newly created performance
+     * @throws InvalidRatingException if the rating in the dto is less than 1 or greater than 4
+     */
     @Override
     public PerformanceDto createPerformance(int employeeId, PerformanceDto performanceDto) {
 
@@ -44,16 +51,32 @@ public class PerformanceServiceImpl implements PerformanceService {
         return dto;
     }
 
+    /***
+     * Method to view all the performance of them employee
+     * @param employeeId id of the employee
+     * @return List of employee performances
+     */
     @Override
     public List<PerformanceDto> viewEmployeesPerformance(int employeeId) {
         return performanceRepo.findEmployeePerformance(employeeId);
     }
 
+    /***
+     * Method to find the weekly performance of employee
+     * @param employeeId id of the employee
+     * @param weekId id of the week
+     * @return performance of the particular week
+     */
     @Override
     public PerformanceDto employeeWeeklyFeedback(int employeeId, int weekId) {
         return mapper.map(performanceRepo.findByEmployeeIdAndWeekId(employeeId, weekId), PerformanceDto.class);
     }
 
+    /***
+     * Method to find the top performer
+     * @param employeeIds list of ids of employees
+     * @return id of the top performing employee
+     */
     @Override
     public Integer topPerformer(List<Integer> employeeIds) {
         int maxRating = Integer.MIN_VALUE;
@@ -78,6 +101,11 @@ public class PerformanceServiceImpl implements PerformanceService {
         return topPerformerEmployeeId;
     }
 
+    /***
+     * Method to find the least performer
+     * @param employeeIds list of ids of employees
+     * @return id of the least performer
+     */
     @Override
     public Integer leastPerformer(List<Integer> employeeIds) {
         int maxRating = Integer.MAX_VALUE;
@@ -102,6 +130,13 @@ public class PerformanceServiceImpl implements PerformanceService {
         return leastPerformerEmployeeId;
     }
 
+    /***
+     * Method to update the employee feedback
+     * @param employeeId id of the employee
+     * @param weekId id of the week
+     * @param updatedFeedback new feedback values
+     * @return updated employee performance
+     */
     @Override
     public PerformanceDto updateEmployeeFeedback(int employeeId, int weekId, PerformanceDto updatedFeedback) {
         Performance performance = performanceRepo.findByEmployeeIdAndWeekId(employeeId, weekId);

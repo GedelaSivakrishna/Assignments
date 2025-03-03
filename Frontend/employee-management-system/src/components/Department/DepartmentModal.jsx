@@ -8,7 +8,7 @@ import { useForm } from "react-hook-form";
 import CancelIcon from "@mui/icons-material/Cancel";
 import DepartmentDeleteModal from "./DepartmentDeleteModal";
 import { useDispatch } from "react-redux";
-import { updateDepartment } from "../redux/Department/Action";
+import { updateDepartment } from "../../redux/Department/Action";
 
 const style = {
   position: "absolute",

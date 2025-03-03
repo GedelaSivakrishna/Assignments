@@ -7,7 +7,7 @@ import { InputLabel, TextField } from "@mui/material";
 import { useForm } from "react-hook-form";
 import CancelIcon from "@mui/icons-material/Cancel";
 import { useDispatch } from "react-redux";
-import { createDepartment } from "../redux/Department/Action";
+import { createDepartment } from "../../redux/Department/Action";
 
 const style = {
   position: "absolute",
@@ -20,7 +20,7 @@ const style = {
   p: 4,
 };
 
-const AddDepartmentModal = ({ open, setOpenModal }) => {
+const DepartmentAddModal = ({ open, setOpenModal }) => {
   const {
     register,
     handleSubmit,
@@ -138,4 +138,4 @@ const AddDepartmentModal = ({ open, setOpenModal }) => {
   );
 };
 
-export default AddDepartmentModal;
+export default DepartmentAddModal;

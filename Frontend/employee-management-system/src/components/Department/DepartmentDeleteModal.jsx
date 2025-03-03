@@ -6,7 +6,7 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { useDispatch } from "react-redux";
-import { deleteDepartment } from "../redux/Department/Action";
+import { deleteDepartment } from "../../redux/Department/Action";
 
 export default function DepartmentDeleteModal({
   open,

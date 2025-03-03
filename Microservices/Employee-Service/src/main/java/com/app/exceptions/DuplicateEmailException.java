@@ -1,4 +1,4 @@
-package com.app.Exceptions;
+package com.app.exceptions;
 
 public class DuplicateEmailException extends RuntimeException {
     public DuplicateEmailException(String message) {

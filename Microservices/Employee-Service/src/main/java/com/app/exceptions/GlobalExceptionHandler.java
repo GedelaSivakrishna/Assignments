@@ -1,4 +1,4 @@
-package com.app.Exceptions;
+package com.app.exceptions;
 
 import feign.FeignException;
 import org.springframework.context.support.DefaultMessageSourceResolvable;

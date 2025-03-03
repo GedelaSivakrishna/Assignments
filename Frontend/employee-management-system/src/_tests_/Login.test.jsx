@@ -2,8 +2,10 @@ import { BrowserRouter } from "react-router";
 import { expect, test, vi } from "vitest";
 import Login from "../components/Login";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { act } from "react";
 
 const mockSetIsLoggedIn = vi.fn();
+// const mockSetShowErrorMsg = vi.spyOn();
 
 const renderLogin = () => {
   return render(
@@ -28,22 +30,45 @@ test("show error message for missing input fields", async () => {
     expect(await screen.findByText(/please enter the password/i)).toBeInTheDocument();
 });
 
-// test("displays error for invalid credentials", async () => {
-//     renderLogin();
-//     fireEvent.change(screen.getByPlaceholderText(/Enter the username/i), { target: {value: "wronguser"}});
-//     fireEvent.change(screen.getByPlaceholderText(/Enter the password/i), {target: {value: "wrongpassword"}});
-//     fireEvent.click(screen.getByRole("button", { name: /login/i}));
-//     await waitFor(() => {
-//         expect(screen.getByText((content, element) => {
-//             const hasText = (node) => node.textContent === "Invalid Login credentials";
-//             const elementHasText = hasText(element);
-//             const childrenDontHaveText = Array.from(element?.children || []).every(
-//                 (child) => !hasText(child)
-//             );
-//             return elementHasText && childrenDontHaveText;
-//         })).toBeInTheDocument();
+// test("show error message for invalid username format", async () => {
+//   renderLogin();
+
+//   await act(async () => {
+
+//     fireEvent.input(screen.getByPlaceholderText(/Enter the username/i), {
+//       target : {
+//         value: "123user"
+//       },
 //     });
-// })
+
+//     fireEvent.click(screen.getByRole("button", {name: /login/i}));
+
+//   })
+
+//   expect(await screen.findByText(/Invalid username/i)).toBeInTheDocument();
+// });
+
+
+
+// test("shows error message for invalid credentials", async () => {
+//   renderLogin();
+  
+//   fireEvent.input(screen.getByPlaceholderText(/Enter the username/i), {
+//     target: { value: "wronguser" },
+//   });
+//   fireEvent.input(screen.getByPlaceholderText(/Enter the password/i), {
+//     target: { value: "wrongpassword" },
+//   });
+
+//   fireEvent.click(screen.getByRole("button", { name: /login/i }));
+
+//   await waitFor(() => {
+//     expect(mockSetShowErrorMsg).toHaveBeenCalledWith(true);
+//     expect(screen.getByText(/Invalid Login credentials/i)).toBeInTheDocument();
+//   });
+
+// });
+
 
 // test("redirects to dashboard on successfull login", async () => {
 //     renderLogin();
@@ -54,4 +79,27 @@ test("show error message for missing input fields", async () => {
 //         expect(mockSetIsLoggedIn).toHaveBeenCalledWith(true);
 //     });
 // })
+
+test("hides error message when user starts typing again", async () => {
+  renderLogin();
+
+  // Enter invalid credentials to trigger error message
+  fireEvent.input(screen.getByPlaceholderText(/Enter the username/i), {
+    target: { value: "wronguser" },
+  });
+  fireEvent.input(screen.getByPlaceholderText(/Enter the password/i), {
+    target: { value: "wrongpassword" },
+  });
+
+  fireEvent.click(screen.getByRole("button", { name: /login/i }));
+
+  expect(await screen.findByText(/Invalid Login credentials/i)).toBeInTheDocument();
+
+  // Change username to clear error
+  fireEvent.input(screen.getByPlaceholderText(/Enter the username/i), {
+    target: { value: "correctuser" },
+  });
+
+  expect(screen.queryByText(/Invalid Login credentials/i)).not.toBeInTheDocument();
+});
 

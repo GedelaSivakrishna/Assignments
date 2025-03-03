@@ -11,6 +11,7 @@ import reactor.core.publisher.Mono;
 @Configuration
 public class GatewayConfig {
 
+    // Route handling for all microservices
     @Bean
     public RouteLocator routeLocator(RouteLocatorBuilder builder) {
         return builder.routes()

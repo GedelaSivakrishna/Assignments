@@ -2,12 +2,9 @@ package com.app.controller;
 
 import com.app.dto.PerformanceDto;
 import com.app.service.PerformanceService;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -20,7 +17,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("performance")
-@RefreshScope // This annotation allows this service to get automatically refreshed through Spring cloud Bus
 public class PerformanceController {
 
     @Autowired

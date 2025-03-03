@@ -1,9 +1,9 @@
 package com.app.service.serviceImplementation;
 
-import com.app.Exceptions.DepartmentException;
-import com.app.Exceptions.DuplicateEmailException;
-import com.app.Exceptions.EmployeeException;
-import com.app.Exceptions.InvalidIdException;
+import com.app.exceptions.DepartmentException;
+import com.app.exceptions.DuplicateEmailException;
+import com.app.exceptions.EmployeeException;
+import com.app.exceptions.InvalidIdException;
 import com.app.constants.Constants;
 import com.app.dto.DepartmentInfoDto;
 import com.app.dto.EmployeeDto;
@@ -451,6 +451,12 @@ public class EmployeeServiceImpl implements EmployeeService {
         return employee;
     }
 
+    /***
+     * Method to create the employee performance
+     * @param employeeId ?? Where should I write the comments ?
+     * @param performanceDto             in employee service or performance service
+     * @return
+     */
     @Override
     public ResponseEntity<PerformanceDto> createEmployeePerformance(int employeeId, PerformanceDto performanceDto) {
         if(Objects.isNull(findEmployeeById(employeeId))) {
@@ -459,6 +465,11 @@ public class EmployeeServiceImpl implements EmployeeService {
         return performanceClient.createPerformanceHandler(employeeId, performanceDto);
     }
 
+    /***
+     *  ??
+     * @param employeeId
+     * @return
+     */
     @Override
     public ResponseEntity<List<PerformanceDto>> viewAllEmployeePerformance(int employeeId) {
         if(Objects.isNull(findEmployeeById(employeeId))) {
@@ -467,6 +478,12 @@ public class EmployeeServiceImpl implements EmployeeService {
         return performanceClient.viewEmployeePerformanceHandler(employeeId);
     }
 
+    /***
+     *
+     * @param employeeId
+     * @param weekId
+     * @return
+     */
     @Override
     public ResponseEntity<PerformanceDto> viewEmployeeWeeklyPerformance(int employeeId, int weekId) {
         if(Objects.isNull(findEmployeeById(employeeId))) {
@@ -475,6 +492,10 @@ public class EmployeeServiceImpl implements EmployeeService {
         return performanceClient.employeeWeeklyFeedbackHandler(employeeId, weekId);
     }
 
+    /***
+     *
+     * @return
+     */
     @Override
     public String topPerformingEmployee() {
         List<Integer> employeeIds = allEmployees().stream().map(Employee::getId).toList();
@@ -484,6 +505,10 @@ public class EmployeeServiceImpl implements EmployeeService {
         return employee.getName();
     }
 
+    /***
+     *
+     * @return
+     */
     @Override
     public String leastPerformingEmployee() {
         List<Integer> employeeIds = allEmployees().stream().map(Employee::getId).toList();
@@ -493,6 +518,13 @@ public class EmployeeServiceImpl implements EmployeeService {
         return employee.getName();
     }
 
+    /***
+     *
+     * @param employeeId
+     * @param weekId
+     * @param updatedPerformance
+     * @return
+     */
     @Override
     public ResponseEntity<PerformanceDto> updateEmployeeWeeklyPerformance(int employeeId, int weekId, PerformanceDto updatedPerformance) {
         if(Objects.isNull(findEmployeeById(employeeId))) {

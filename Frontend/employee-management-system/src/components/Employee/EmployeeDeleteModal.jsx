@@ -6,7 +6,7 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { useDispatch } from "react-redux";
-import { deleteEmployee } from "../redux/Employee/Action";
+import { deleteEmployee } from "../../redux/Employee/Action";
 
 export default function EmployeeDeleteModal({ open, setOpenDeleteModal, id }) {
   const dispatch = useDispatch();

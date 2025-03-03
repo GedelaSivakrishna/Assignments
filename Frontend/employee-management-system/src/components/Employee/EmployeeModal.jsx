@@ -3,18 +3,13 @@ import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import Fade from "@mui/material/Fade";
 import Button from "@mui/material/Button";
-import {
-  Alert,
-  Chip,
-  InputLabel,
-  Snackbar,
-  Stack,
-  TextField,
-} from "@mui/material";
+import { Alert, Chip, InputLabel, Snackbar, Stack, TextField } from "@mui/material";
 import { useForm } from "react-hook-form";
 import CancelIcon from "@mui/icons-material/Cancel";
+import EmployeeDeleteModal from "./EmployeeDeleteModal";
 import { useDispatch, useSelector } from "react-redux";
-import { createEmployee } from "../redux/Employee/Action";
+import { fetchDepartmentsInBatch } from "../../redux/Department/Action";
+import { updateEmployee } from "../../redux/Employee/Action";
 
 const style = {
   position: "absolute",
@@ -27,12 +22,8 @@ const style = {
   p: 4,
 };
 
-const AddEmployeeModal = ({ open, setOpenModal }) => {
-  const [selectedDepartments, setSelectedDepartments] = useState([]); // Default selected department
-  const storeDepartments = useSelector(
-    (store) => store.department?.departments
-  );
-  const departments = storeDepartments?.map((dept) => dept.name);
+const EmployeeModal = ({ open, setOpenModal, row }) => {
+  const [openDeleteModal, setOpenDeleteModal] = useState(false);
   const {
     register,
     handleSubmit,
@@ -40,27 +31,49 @@ const AddEmployeeModal = ({ open, setOpenModal }) => {
     reset,
   } = useForm({
     defaultValues: {
-      name: "",
-      email: "",
-      dateOfJoining: "",
-      salary: "",
+      name: row.name,
+      email: row.email,
+      dateOfJoining: row.dateOfJoining,
+      salary: row.salary,
     },
   });
   const dispatch = useDispatch();
-  const [alertOpen, setAlertOpen] = useState(false);
-  const [errorAlertOpen, setErrorAlertOpen] = useState(false);
-  const createdEmployee = useSelector(store => store.employee.createdEmployee);
-  const loading = useSelector(store => store.employee.loading);
-  const createEmployeeError = useSelector(store => store.employee.createEmployeeError);
+  const storeDepartments = useSelector(
+    (store) => store.department?.departments
+  );
+  const totalDepartmentPages = useSelector(store => store.department.totalDepartmentPages);
+  const departments = storeDepartments?.map((dep) => dep.name);
+  const userDepartments = row?.departments?.map((dept) => dept.name);
+  const [selectedDepartments, setSelectedDepartments] = useState(); // Default selected department
+  const [page, setPage] = useState(0);
 
-  useEffect(()=>{
-    if(createdEmployee) {
-      setAlertOpen(true);
+  useEffect(() => {
+    if (row) {
+      reset({
+        name: row.name,
+        email: row.email,
+        dateOfJoining: row.dateOfJoining,
+        salary: row.salary,
+      });
+      setSelectedDepartments(userDepartments);
     }
-    else if (createEmployeeError) {
-      setErrorAlertOpen(true);
+  }, [row]);
+
+  useEffect(() => {
+    const reqData = {
+      pageNo: page,
+      size: 5,
     }
-  },[createdEmployee, createEmployeeError])
+    dispatch(fetchDepartmentsInBatch(reqData));
+  }, [page]);
+
+  function handlePreviousBtnClick() {
+    setPage(page-1);
+  }
+
+  function handleNextBtnClick() {
+    setPage(page + 1);
+  }
 
   const handleClose = (event, reason) => {
     if (reason === "backdropClick") {
@@ -78,43 +91,22 @@ const AddEmployeeModal = ({ open, setOpenModal }) => {
     );
   }
 
-  function handleCancel() {
-    reset({
-      name: "",
-      email: "",
-      dateOfJoining: "",
-      salary: "",
-    });
-    handleClose();
-  }
-
-  function handleSaveEmployee(data) {
+  function handleUpdateEmployee(data) {
     const deptIds = storeDepartments
-      .filter((dept) => selectedDepartments.includes(dept.name))
+      ?.filter((storeDept) => selectedDepartments.includes(storeDept.name))
       .map((dept) => dept.id);
+    data.deptIds = deptIds;
     let reqData = {
-      employeeDto: {
-        ...data,
-        deptIds: deptIds,
-      },
+      id: row.id,
+      employeeDto: data,
     };
-    dispatch(createEmployee(reqData));
-    reset({
-      name: "",
-      email: "",
-      dateOfJoining: "",
-      salary: "",
-    });
-    // have to turn on loader here
+    dispatch(updateEmployee(reqData));
     handleClose();
   }
 
-  const handleAlertClose = () => {
-    setAlertOpen(false);
-  };
-
-  const handleErrorAlertClose = () => {
-    setErrorAlertOpen(false);
+  function handleDeleteEmployee() {
+    setOpenDeleteModal(true);
+    handleClose();
   }
 
   return (
@@ -149,7 +141,6 @@ const AddEmployeeModal = ({ open, setOpenModal }) => {
                         message: "Please enter name",
                       },
                     })}
-                    placeholder="Enter the employee name"
                   />
                   {errors.name && (
                     <p className="text-red-500">{errors.name.message}</p>
@@ -172,7 +163,6 @@ const AddEmployeeModal = ({ open, setOpenModal }) => {
                         message: "Please enter valid email",
                       },
                     })}
-                    placeholder="Enter the email"
                   />
                   {errors.email && (
                     <p className="text-red-500">{errors.email.message}</p>
@@ -191,7 +181,6 @@ const AddEmployeeModal = ({ open, setOpenModal }) => {
                         message: "Please select join date",
                       },
                     })}
-                    placeholder="Select the date of joining"
                   />
                   {errors.dateOfJoining && (
                     <p className="text-red-500">
@@ -215,7 +204,6 @@ const AddEmployeeModal = ({ open, setOpenModal }) => {
                         message: "Please enter a valid salary",
                       },
                     })}
-                    placeholder="Enter the salary"
                   />
                   {errors.salary && (
                     <p className="text-red-500">{errors.salary.message}</p>
@@ -224,50 +212,62 @@ const AddEmployeeModal = ({ open, setOpenModal }) => {
               </div>
 
               {/* Employee Departments Selection */}
-              <div>
-                <InputLabel>Department</InputLabel>
-                <Stack
-                  direction="row"
-                  sx={{ display: "flex", flexWrap: "wrap" }}
-                  gap={1}
-                >
-                  {departments.map((department) => (
-                    <Chip
-                      key={department}
-                      label={department}
-                      variant={
-                        selectedDepartments.includes(department)
-                          ? "filled"
-                          : "outlined"
-                      }
-                      onClick={() => handleChipClick(department)}
-                      color={
-                        selectedDepartments.includes(department)
-                          ? "primary"
-                          : "default"
-                      }
-                    />
-                  ))}
-                </Stack>
-              </div>
+              {selectedDepartments && (
+                <div>
+                  <InputLabel>Department</InputLabel>
+                  <Stack
+                    direction="row"
+                    sx={{ display: "flex", flexWrap: "wrap" }}
+                    gap={1}
+                  >
+                    {departments?.map((department) => (
+                      <Chip
+                        key={department}
+                        label={department}
+                        variant={
+                          selectedDepartments?.includes(department)
+                            ? "filled"
+                            : "outlined"
+                        }
+                        onClick={() => handleChipClick(department)}
+                        color={
+                          selectedDepartments?.includes(department)
+                            ? "primary"
+                            : "default"
+                        }
+                      />
+                    ))}
+                  </Stack>
+                  <div className="flex justify-around min-w-full pt-4">
+                      <Button 
+                      disabled={page == 0}
+                      variant="outlined" onClick={handlePreviousBtnClick}>Prev</Button>
+                      <Button
+                      disabled={page == totalDepartmentPages-1}
+                      variant="outlined" onClick={handleNextBtnClick}>Next</Button>
+                  </div>
+                </div>
+              )}
+
+
 
               {/* Action Buttons */}
               <div className="flex justify-evenly">
                 <Button
-                  onClick={handleCancel}
+                  onClick={handleSubmit(handleUpdateEmployee)}
                   color="warning"
                   variant="contained"
                   sx={{ paddingX: "2rem" }}
                 >
-                  Cancel
+                  Update
                 </Button>
                 <Button
-                  onClick={handleSubmit(handleSaveEmployee)}
-                  color="success"
+                  onClick={handleDeleteEmployee}
+                  color="error"
                   variant="contained"
                   sx={{ paddingX: "2rem" }}
                 >
-                  Save
+                  Delete
                 </Button>
               </div>
             </div>
@@ -275,30 +275,16 @@ const AddEmployeeModal = ({ open, setOpenModal }) => {
         </Fade>
       </Modal>
 
-      <Snackbar
-        open={alertOpen}
-        autoHideDuration={5000} // Alert will close after 5 seconds
-        onClose={handleAlertClose}
-        anchorOrigin={{ vertical: "top", horizontal: "right" }} // Position
-      >
-        <Alert onClose={handleAlertClose} severity="success" variant="filled">
-          Employee added successfully
-        </Alert>
-      </Snackbar>
-      
-      <Snackbar
-        open={errorAlertOpen}
-        autoHideDuration={5000} // Alert will close after 5 seconds
-        onClose={handleErrorAlertClose}
-        anchorOrigin={{ vertical: "top", horizontal: "right" }} // Position
-      >
-        <Alert onClose={handleErrorAlertClose} severity="error" variant="filled">
-          {createEmployeeError}
-        </Alert>
-      </Snackbar>
+        {/* Have to implement Lazy Loading here */}
+      {openDeleteModal &&
+         <EmployeeDeleteModal
+          open={openDeleteModal}
+          setOpenDeleteModal={setOpenDeleteModal}
+          id={row?.id}
+        /> }
 
     </div>
   );
 };
 
-export default AddEmployeeModal;
+export default EmployeeModal;

@@ -1,6 +1,6 @@
 package com.app.service.serviceImplementation;
 
-import com.app.Exceptions.DepartmentException;
+import com.app.exceptions.DepartmentException;
 import com.app.constants.Constants;
 import com.app.dto.DepartmentDto;
 import com.app.dto.UpdateDepartmentDto;

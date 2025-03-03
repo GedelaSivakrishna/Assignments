@@ -1,12 +1,12 @@
 import { Button } from "@mui/material";
 import React, { lazy, Suspense, useState } from "react";
 import { useNavigate } from "react-router";
-// import AddEmployeeModal from "./AddEmployeeModal";
-// import AddDepartmentModal from "./AddDepartmentModal";
+// import EmployeeAddModal from "../components/Employee/EmployeeAddModal";
+// import DepartmentAddModal from "../components/Department/DepartmentAddModal";
 import "../App.css";
 
-const AddEmployeeModal = lazy(() => import("./AddEmployeeModal"));
-const AddDepartmentModal = lazy(() => import("./AddDepartmentModal"));
+const EmployeeAddModal = lazy(() => import("../components/Employee/EmployeeAddModal"));
+const DepartmentAddModal = lazy(() => import("../components/Department/DepartmentAddModal"));
 
 const Navbar = ({ selectedButton, setSelectedButton }) => {
   const [openAddModal, setOpenAddModal] = useState(false);
@@ -63,7 +63,7 @@ const Navbar = ({ selectedButton, setSelectedButton }) => {
 
       <Suspense>
         {selectedButton === "EMPLOYEE" && openAddModal && (
-          <AddEmployeeModal
+          <EmployeeAddModal
             open={openAddModal}
             setOpenModal={setOpenAddModal}
           />
@@ -72,7 +72,7 @@ const Navbar = ({ selectedButton, setSelectedButton }) => {
 
       <Suspense>
         {selectedButton === "DEPARTMENT" && (
-          <AddDepartmentModal
+          <DepartmentAddModal
             open={openAddModal}
             setOpenModal={setOpenAddModal}
           />
