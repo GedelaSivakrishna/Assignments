@@ -4,6 +4,7 @@ import com.app.dto.PerformanceDto;
 import com.app.service.PerformanceService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -19,7 +20,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("performance")
-@Validated
+@RefreshScope // This annotation allows this service to get automatically refreshed through Spring cloud Bus
 public class PerformanceController {
 
     @Autowired
@@ -27,7 +28,7 @@ public class PerformanceController {
 
     @PostMapping("create")
     public ResponseEntity<PerformanceDto> createPerformanceHandler(@RequestParam("empId") int employeeId,
-                                                                   @Valid @RequestBody PerformanceDto performanceDto) {
+                                                                   @RequestBody PerformanceDto performanceDto) {
         return new ResponseEntity<>(performanceService.createPerformance(employeeId, performanceDto), HttpStatus.CREATED);
     }
 
