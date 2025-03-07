@@ -6,6 +6,9 @@ services:
       - "8080:8080"
     networks:
       em-system-network:
+    restart: on-failure
+    depends_on:
+      - mysql
 
   mysql:
     container_name: mysqldb

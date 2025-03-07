@@ -1,52 +1,17 @@
-2025-03-05T14:36:49.582+05:30  INFO 13468 --- [Employee-Management-System] [main] c.a.EmployeeManagementSystemApplication  : Starting EmployeeManagementSystemApplication using Java 23.0.1 with PID 13468 (C:\Users\gsivakrishna\Documents\Internship Assignments\Assignments\Employee-Management-System\target\classes started by gsivakrishna in C:\Users\gsivakrishna\Documents\Internship Assignments\Assignments\Employee-Management-System)
-2025-03-05T14:36:49.596+05:30  INFO 13468 --- [Employee-Management-System] [main] c.a.EmployeeManagementSystemApplication  : No active profile set, falling back to 1 default profile: "default"
-2025-03-05T14:36:51.959+05:30  INFO 13468 --- [Employee-Management-System] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2025-03-05T14:36:52.080+05:30  INFO 13468 --- [Employee-Management-System] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 102 ms. Found 2 JPA repository interfaces.
-2025-03-05T14:36:52.962+05:30  INFO 13468 --- [Employee-Management-System] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
-2025-03-05T14:36:53.003+05:30  INFO 13468 --- [Employee-Management-System] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
-2025-03-05T14:36:53.004+05:30  INFO 13468 --- [Employee-Management-System] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.34]
-2025-03-05T14:36:53.178+05:30  INFO 13468 --- [Employee-Management-System] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
-2025-03-05T14:36:53.179+05:30  INFO 13468 --- [Employee-Management-System] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 3496 ms
-2025-03-05T14:36:53.463+05:30  INFO 13468 --- [Employee-Management-System] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
-2025-03-05T14:36:53.578+05:30  INFO 13468 --- [Employee-Management-System] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.5.Final
-2025-03-05T14:36:53.643+05:30  INFO 13468 --- [Employee-Management-System] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
-2025-03-05T14:36:54.227+05:30  INFO 13468 --- [Employee-Management-System] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
-2025-03-05T14:36:54.275+05:30  INFO 13468 --- [Employee-Management-System] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2025-03-05T14:36:54.964+05:30  INFO 13468 --- [Employee-Management-System] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@2e3900dc
-2025-03-05T14:36:54.966+05:30  INFO 13468 --- [Employee-Management-System] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
-2025-03-05T14:36:55.113+05:30  INFO 13468 --- [Employee-Management-System] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
-	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
-	Database driver: undefined/unknown
-	Database version: 8.0.41
-	Autocommit mode: undefined/unknown
-	Isolation level: undefined/unknown
-	Minimum pool size: undefined/unknown
-	Maximum pool size: undefined/unknown
-2025-03-05T14:36:56.448+05:30  INFO 13468 --- [Employee-Management-System] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
-2025-03-05T14:36:56.641+05:30  INFO 13468 --- [Employee-Management-System] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
-2025-03-05T14:36:58.482+05:30  INFO 13468 --- [Employee-Management-System] [main] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
-2025-03-05T14:37:01.521+05:30  WARN 13468 --- [Employee-Management-System] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-2025-03-05T14:37:03.123+05:30  INFO 13468 --- [Employee-Management-System] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
-2025-03-05T14:37:03.149+05:30  INFO 13468 --- [Employee-Management-System] [main] c.a.EmployeeManagementSystemApplication  : Started EmployeeManagementSystemApplication in 14.368 seconds (process running for 19.345)
-2025-03-05T14:48:43.217+05:30  INFO 13468 --- [Employee-Management-System] [SpringApplicationShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
-2025-03-05T14:48:43.223+05:30  INFO 13468 --- [Employee-Management-System] [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
-2025-03-05T14:48:43.228+05:30  INFO 13468 --- [Employee-Management-System] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
-2025-03-05T14:48:43.231+05:30  INFO 13468 --- [Employee-Management-System] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
-2025-03-05T14:48:43.242+05:30  INFO 13468 --- [Employee-Management-System] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
-2025-03-05T15:09:32.152+05:30  INFO 22688 --- [Employee-Management-System] [main] EmployeeManagementSystemApplicationTests : Starting EmployeeManagementSystemApplicationTests using Java 23.0.1 with PID 22688 (started by gsivakrishna in C:\Users\gsivakrishna\Documents\Internship Assignments\Assignments\Employee-Management-System)
-2025-03-05T15:09:32.154+05:30  INFO 22688 --- [Employee-Management-System] [main] EmployeeManagementSystemApplicationTests : No active profile set, falling back to 1 default profile: "default"
-2025-03-05T15:09:33.654+05:30  INFO 22688 --- [Employee-Management-System] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2025-03-05T15:09:33.805+05:30  INFO 22688 --- [Employee-Management-System] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 129 ms. Found 2 JPA repository interfaces.
-2025-03-05T15:09:34.626+05:30  INFO 22688 --- [Employee-Management-System] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
-2025-03-05T15:09:34.735+05:30  INFO 22688 --- [Employee-Management-System] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.5.Final
-2025-03-05T15:09:34.780+05:30  INFO 22688 --- [Employee-Management-System] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
-2025-03-05T15:09:35.241+05:30  INFO 22688 --- [Employee-Management-System] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
-2025-03-05T15:09:35.286+05:30  INFO 22688 --- [Employee-Management-System] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2025-03-05T15:09:38.723+05:30  WARN 22688 --- [Employee-Management-System] [main] o.h.engine.jdbc.spi.SqlExceptionHelper   : SQL Error: 0, SQLState: 08S01
-2025-03-05T15:09:38.724+05:30 ERROR 22688 --- [Employee-Management-System] [main] o.h.engine.jdbc.spi.SqlExceptionHelper   : Communications link failure
+2025-03-07T12:28:16.980+05:30  INFO 22432 --- [Employee-Management-System] [main] EmployeeManagementSystemApplicationTests : Starting EmployeeManagementSystemApplicationTests using Java 23.0.1 with PID 22432 (started by gsivakrishna in C:\Users\gsivakrishna\Documents\Internship Assignments\Assignments\Docker\Employee-Management-System)
+2025-03-07T12:28:16.993+05:30  INFO 22432 --- [Employee-Management-System] [main] EmployeeManagementSystemApplicationTests : No active profile set, falling back to 1 default profile: "default"
+2025-03-07T12:28:18.256+05:30  INFO 22432 --- [Employee-Management-System] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-03-07T12:28:18.361+05:30  INFO 22432 --- [Employee-Management-System] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 89 ms. Found 2 JPA repository interfaces.
+2025-03-07T12:28:19.046+05:30  INFO 22432 --- [Employee-Management-System] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-03-07T12:28:19.145+05:30  INFO 22432 --- [Employee-Management-System] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.5.Final
+2025-03-07T12:28:19.203+05:30  INFO 22432 --- [Employee-Management-System] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-03-07T12:28:19.686+05:30  INFO 22432 --- [Employee-Management-System] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-03-07T12:28:19.739+05:30  INFO 22432 --- [Employee-Management-System] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-03-07T12:28:23.189+05:30  WARN 22432 --- [Employee-Management-System] [main] o.h.engine.jdbc.spi.SqlExceptionHelper   : SQL Error: 0, SQLState: 08S01
+2025-03-07T12:28:23.190+05:30 ERROR 22432 --- [Employee-Management-System] [main] o.h.engine.jdbc.spi.SqlExceptionHelper   : Communications link failure
 
 The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
-2025-03-05T15:09:38.730+05:30  WARN 22688 --- [Employee-Management-System] [main] o.h.e.j.e.i.JdbcEnvironmentInitiator     : HHH000342: Could not obtain connection to query metadata
+2025-03-07T12:28:23.192+05:30  WARN 22432 --- [Employee-Management-System] [main] o.h.e.j.e.i.JdbcEnvironmentInitiator     : HHH000342: Could not obtain connection to query metadata
 
 org.hibernate.exception.JDBCConnectionException: unable to obtain isolated JDBC connection [Communications link failure
 
@@ -206,7 +171,7 @@ The last packet sent successfully to the server was 0 milliseconds ago. The driv
 	at com.mysql.cj.jdbc.ConnectionImpl.connectOneTryOnly(ConnectionImpl.java:961) ~[mysql-connector-j-9.1.0.jar:9.1.0]
 	at com.mysql.cj.jdbc.ConnectionImpl.createNewIO(ConnectionImpl.java:825) ~[mysql-connector-j-9.1.0.jar:9.1.0]
 	... 128 common frames omitted
-Caused by: java.net.UnknownHostException: No such host is known (empsdb)
+Caused by: java.net.UnknownHostException: No such host is known (mysqldb)
 	at java.base/java.net.Inet6AddressImpl.lookupAllHostAddr(Native Method) ~[na:na]
 	at java.base/java.net.Inet6AddressImpl.lookupAllHostAddr(Inet6AddressImpl.java:52) ~[na:na]
 	at java.base/java.net.InetAddress$PlatformResolver.lookupByName(InetAddress.java:1221) ~[na:na]
@@ -218,12 +183,12 @@ Caused by: java.net.UnknownHostException: No such host is known (empsdb)
 	at com.mysql.cj.protocol.a.NativeSocketConnection.connect(NativeSocketConnection.java:53) ~[mysql-connector-j-9.1.0.jar:9.1.0]
 	... 131 common frames omitted
 
-2025-03-05T15:09:38.775+05:30 ERROR 22688 --- [Employee-Management-System] [main] j.LocalContainerEntityManagerFactoryBean : Failed to initialize JPA EntityManagerFactory: Unable to create requested service [org.hibernate.engine.jdbc.env.spi.JdbcEnvironment] due to: Unable to determine Dialect without JDBC metadata (please set 'jakarta.persistence.jdbc.url' for common cases or 'hibernate.dialect' when a custom Dialect implementation must be provided)
-2025-03-05T15:09:38.777+05:30  WARN 22688 --- [Employee-Management-System] [main] o.s.w.c.s.GenericWebApplicationContext   : Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'entityManagerFactory' defined in class path resource [org/springframework/boot/autoconfigure/orm/jpa/HibernateJpaConfiguration.class]: Unable to create requested service [org.hibernate.engine.jdbc.env.spi.JdbcEnvironment] due to: Unable to determine Dialect without JDBC metadata (please set 'jakarta.persistence.jdbc.url' for common cases or 'hibernate.dialect' when a custom Dialect implementation must be provided)
-2025-03-05T15:09:38.825+05:30  INFO 22688 --- [Employee-Management-System] [main] .s.b.a.l.ConditionEvaluationReportLogger : 
+2025-03-07T12:28:23.208+05:30 ERROR 22432 --- [Employee-Management-System] [main] j.LocalContainerEntityManagerFactoryBean : Failed to initialize JPA EntityManagerFactory: Unable to create requested service [org.hibernate.engine.jdbc.env.spi.JdbcEnvironment] due to: Unable to determine Dialect without JDBC metadata (please set 'jakarta.persistence.jdbc.url' for common cases or 'hibernate.dialect' when a custom Dialect implementation must be provided)
+2025-03-07T12:28:23.210+05:30  WARN 22432 --- [Employee-Management-System] [main] o.s.w.c.s.GenericWebApplicationContext   : Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'entityManagerFactory' defined in class path resource [org/springframework/boot/autoconfigure/orm/jpa/HibernateJpaConfiguration.class]: Unable to create requested service [org.hibernate.engine.jdbc.env.spi.JdbcEnvironment] due to: Unable to determine Dialect without JDBC metadata (please set 'jakarta.persistence.jdbc.url' for common cases or 'hibernate.dialect' when a custom Dialect implementation must be provided)
+2025-03-07T12:28:23.250+05:30  INFO 22432 --- [Employee-Management-System] [main] .s.b.a.l.ConditionEvaluationReportLogger : 
 
 Error starting ApplicationContext. To display the condition evaluation report re-run your application with 'debug' enabled.
-2025-03-05T15:09:38.872+05:30 ERROR 22688 --- [Employee-Management-System] [main] o.s.boot.SpringApplication               : Application run failed
+2025-03-07T12:28:23.293+05:30 ERROR 22432 --- [Employee-Management-System] [main] o.s.boot.SpringApplication               : Application run failed
 
 org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'entityManagerFactory' defined in class path resource [org/springframework/boot/autoconfigure/orm/jpa/HibernateJpaConfiguration.class]: Unable to create requested service [org.hibernate.engine.jdbc.env.spi.JdbcEnvironment] due to: Unable to determine Dialect without JDBC metadata (please set 'jakarta.persistence.jdbc.url' for common cases or 'hibernate.dialect' when a custom Dialect implementation must be provided)
 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1812) ~[spring-beans-6.2.2.jar:6.2.2]
@@ -351,9 +316,9 @@ Caused by: org.hibernate.HibernateException: Unable to determine Dialect without
 	at org.hibernate.service.internal.AbstractServiceRegistryImpl.createService(AbstractServiceRegistryImpl.java:263) ~[hibernate-core-6.6.5.Final.jar:6.6.5.Final]
 	... 110 common frames omitted
 
-2025-03-05T15:09:38.886+05:30  WARN 22688 --- [Employee-Management-System] [main] o.s.test.context.TestContextManager      : Caught exception while allowing TestExecutionListener [org.springframework.test.context.web.ServletTestExecutionListener] to prepare test instance [com.app.EmployeeManagementSystemApplicationTests@a120b9]
+2025-03-07T12:28:23.306+05:30  WARN 22432 --- [Employee-Management-System] [main] o.s.test.context.TestContextManager      : Caught exception while allowing TestExecutionListener [org.springframework.test.context.web.ServletTestExecutionListener] to prepare test instance [com.app.EmployeeManagementSystemApplicationTests@e49437]
 
-java.lang.IllegalStateException: Failed to load ApplicationContext for [WebMergedContextConfiguration@ca2cd5e testClass = com.app.EmployeeManagementSystemApplicationTests, locations = [], classes = [com.app.EmployeeManagementSystemApplication], contextInitializerClasses = [], activeProfiles = [], propertySourceDescriptors = [], propertySourceProperties = ["org.springframework.boot.test.context.SpringBootTestContextBootstrapper=true"], contextCustomizers = [org.springframework.boot.test.context.filter.ExcludeFilterContextCustomizer@7ac296f6, org.springframework.boot.test.json.DuplicateJsonObjectContextCustomizerFactory$DuplicateJsonObjectContextCustomizer@54e041a4, org.springframework.boot.test.mock.mockito.MockitoContextCustomizer@0, org.springframework.boot.test.web.client.TestRestTemplateContextCustomizer@776a6d9b, org.springframework.boot.test.web.reactor.netty.DisableReactorResourceFactoryGlobalResourcesContextCustomizerFactory$DisableReactorResourceFactoryGlobalResourcesContextCustomizerCustomizer@1787f2a0, org.springframework.boot.test.autoconfigure.OnFailureConditionReportContextCustomizerFactory$OnFailureConditionReportContextCustomizer@51bf5add, org.springframework.boot.test.autoconfigure.actuate.observability.ObservabilityContextCustomizerFactory$DisableObservabilityContextCustomizer@1f, org.springframework.boot.test.autoconfigure.properties.PropertyMappingContextCustomizer@0, org.springframework.boot.test.autoconfigure.web.servlet.WebDriverContextCustomizer@24c22fe, org.springframework.test.context.support.DynamicPropertiesContextCustomizer@0, org.springframework.boot.test.context.SpringBootTestAnnotation@b330d3fe], resourceBasePath = "src/main/webapp", contextLoader = org.springframework.boot.test.context.SpringBootContextLoader, parent = null]
+java.lang.IllegalStateException: Failed to load ApplicationContext for [WebMergedContextConfiguration@1b8d20e6 testClass = com.app.EmployeeManagementSystemApplicationTests, locations = [], classes = [com.app.EmployeeManagementSystemApplication], contextInitializerClasses = [], activeProfiles = [], propertySourceDescriptors = [], propertySourceProperties = ["org.springframework.boot.test.context.SpringBootTestContextBootstrapper=true"], contextCustomizers = [org.springframework.boot.test.context.filter.ExcludeFilterContextCustomizer@7ac296f6, org.springframework.boot.test.json.DuplicateJsonObjectContextCustomizerFactory$DuplicateJsonObjectContextCustomizer@54e041a4, org.springframework.boot.test.mock.mockito.MockitoContextCustomizer@0, org.springframework.boot.test.web.client.TestRestTemplateContextCustomizer@776a6d9b, org.springframework.boot.test.web.reactor.netty.DisableReactorResourceFactoryGlobalResourcesContextCustomizerFactory$DisableReactorResourceFactoryGlobalResourcesContextCustomizerCustomizer@1787f2a0, org.springframework.boot.test.autoconfigure.OnFailureConditionReportContextCustomizerFactory$OnFailureConditionReportContextCustomizer@51bf5add, org.springframework.boot.test.autoconfigure.actuate.observability.ObservabilityContextCustomizerFactory$DisableObservabilityContextCustomizer@1f, org.springframework.boot.test.autoconfigure.properties.PropertyMappingContextCustomizer@0, org.springframework.boot.test.autoconfigure.web.servlet.WebDriverContextCustomizer@24c22fe, org.springframework.test.context.support.DynamicPropertiesContextCustomizer@0, org.springframework.boot.test.context.SpringBootTestAnnotation@b330d3fe], resourceBasePath = "src/main/webapp", contextLoader = org.springframework.boot.test.context.SpringBootContextLoader, parent = null]
 	at org.springframework.test.context.cache.DefaultCacheAwareContextLoaderDelegate.loadContext(DefaultCacheAwareContextLoaderDelegate.java:180) ~[spring-test-6.2.2.jar:6.2.2]
 	at org.springframework.test.context.support.DefaultTestContext.getApplicationContext(DefaultTestContext.java:130) ~[spring-test-6.2.2.jar:6.2.2]
 	at org.springframework.test.context.web.ServletTestExecutionListener.setUpRequestContextIfNecessary(ServletTestExecutionListener.java:191) ~[spring-test-6.2.2.jar:6.2.2]
