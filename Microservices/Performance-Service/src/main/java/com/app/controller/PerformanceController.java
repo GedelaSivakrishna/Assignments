@@ -30,7 +30,10 @@ public class PerformanceController {
 
     @GetMapping("employee")
     public ResponseEntity<List<PerformanceDto>> viewEmployeePerformanceHandler(@RequestParam("empId") int employeeId) {
-        return new ResponseEntity<>(performanceService.viewEmployeesPerformance(employeeId), HttpStatus.OK);
+        System.out.println("Request received in performance service with employee ID: " + employeeId);
+       List<PerformanceDto> employeePerformances = performanceService.viewEmployeesPerformance(employeeId);
+        System.out.println("Fetched the details from database in performance service, sending back to employee service");
+        return new ResponseEntity<>(employeePerformances, HttpStatus.OK);
     }
 
     @GetMapping("employee/week")

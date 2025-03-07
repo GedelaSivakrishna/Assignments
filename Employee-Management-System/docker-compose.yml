@@ -1,0 +1,26 @@
+
+services:
+  app:
+    build: .
+    ports:
+      - "8080:8080"
+    networks:
+      em-system-network:
+
+  mysql:
+    container_name: mysqldb
+    image: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: employeedb
+    networks:
+      em-system-network:
+    volumes:
+      - ems-data:/var/lib/mysql
+
+networks:
+  em-system-network:
+    driver: bridge
+
+volumes:
+  ems-data:

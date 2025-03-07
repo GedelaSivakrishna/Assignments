@@ -196,6 +196,9 @@ public class EmployeeController {
 
     @GetMapping("employee/feedback/all")
     public ResponseEntity<List<PerformanceDto>> viewAllEmployeePerformanceHandler(@RequestParam("empId") int employeeId) {
+        System.out.println("Request received in employee service for employee ID: " + employeeId);
+        List<PerformanceDto> employeePerformances = employeeService.viewAllEmployeePerformance(employeeId).getBody();
+        System.out.println("Sending Response back to API Gateway...");
         return employeeService.viewAllEmployeePerformance(employeeId);
     }
 

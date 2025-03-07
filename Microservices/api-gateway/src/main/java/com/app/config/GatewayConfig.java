@@ -14,6 +14,7 @@ public class GatewayConfig {
     // Route handling for all microservices
     @Bean
     public RouteLocator routeLocator(RouteLocatorBuilder builder) {
+        System.out.println("In API GATEWAY--------------------");
         return builder.routes()
 
                 .route("employee-service", r -> r.path("/employee/**")

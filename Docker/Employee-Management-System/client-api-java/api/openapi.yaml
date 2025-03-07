@@ -1,0 +1,623 @@
+openapi: 3.1.0
+info:
+  title: OpenAPI definition
+  version: v0
+servers:
+- description: Generated server url
+  url: http://localhost:8080
+paths:
+  /employees/salary/hike:
+    put:
+      operationId: incrementEmployeesSalary
+      parameters:
+      - description: Increment salary percentage value
+        explode: true
+        in: query
+        name: percent
+        required: true
+        schema:
+          format: float
+          type: number
+        style: form
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                type: string
+          description: OK
+      summary: Update Employees salary
+      tags:
+      - employee-controller
+      x-accepts:
+      - '*/*'
+  /employee/{empId}:
+    delete:
+      description: Employee should exist
+      operationId: deleteEmployee
+      parameters:
+      - description: Id of the employee
+        explode: false
+        in: path
+        name: empId
+        required: true
+        schema:
+          format: int32
+          type: integer
+        style: simple
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                type: string
+          description: OK
+      summary: Delete Employee
+      tags:
+      - employee-controller
+      x-accepts:
+      - '*/*'
+    put:
+      operationId: updateEmployee
+      parameters:
+      - description: Id of the employee
+        explode: false
+        in: path
+        name: empId
+        required: true
+        schema:
+          format: int32
+          type: integer
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmployeeDto'
+        description: Employee details to update
+        required: true
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Employee'
+          description: OK
+      summary: Update Employee
+      tags:
+      - employee-controller
+      x-content-type: application/json
+      x-accepts:
+      - '*/*'
+  /department/transfer:
+    put:
+      operationId: transferEmployeeDepartment
+      parameters:
+      - description: Id of the employee
+        explode: true
+        in: query
+        name: empId
+        required: true
+        schema:
+          format: int32
+          type: integer
+        style: form
+      - description: Id of the department from which employee to be transferred
+        explode: true
+        in: query
+        name: fromDeptId
+        required: true
+        schema:
+          format: int32
+          type: integer
+        style: form
+      - description: Id of the department to which employee to be transferred
+        explode: true
+        in: query
+        name: toDeptId
+        required: true
+        schema:
+          format: int32
+          type: integer
+        style: form
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Employee'
+          description: OK
+      summary: Transfer Employees Department
+      tags:
+      - employee-controller
+      x-accepts:
+      - '*/*'
+  /department/employee/remove:
+    put:
+      description: 'Employee Id & Department Id should be valid '
+      operationId: removeEmployeeFromDepartment
+      parameters:
+      - description: Id of the employee
+        explode: true
+        in: query
+        name: empId
+        required: true
+        schema:
+          format: int32
+          type: integer
+        style: form
+      - description: Id of the department
+        explode: true
+        in: query
+        name: deptId
+        required: true
+        schema:
+          format: int32
+          type: integer
+        style: form
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Employee'
+          description: OK
+      summary: Remove Employee from department
+      tags:
+      - employee-controller
+      x-accepts:
+      - '*/*'
+  /employee:
+    post:
+      operationId: addEmployee
+      parameters:
+      - description: Id of the department
+        explode: true
+        in: query
+        name: deptId
+        required: true
+        schema:
+          format: int32
+          type: integer
+        style: form
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmployeeDto'
+        description: Employee to create
+        required: true
+      responses:
+        "201":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Employee'
+          description: New Employee created
+      summary: Add Employee
+      tags:
+      - employee-controller
+      x-content-type: application/json
+      x-accepts:
+      - '*/*'
+  /department:
+    post:
+      operationId: addDepartment
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DepartmentDto'
+        description: Department to create
+        required: true
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Department'
+          description: OK
+      summary: Add Department
+      tags:
+      - department-controller
+      x-content-type: application/json
+      x-accepts:
+      - '*/*'
+  /department/employee/add:
+    post:
+      description: 'Employee Id & Department Id should be valid '
+      operationId: addEmployeeToDepartment
+      parameters:
+      - description: Id of the employee
+        explode: true
+        in: query
+        name: empId
+        required: true
+        schema:
+          format: int32
+          type: integer
+        style: form
+      - description: Id of the department
+        explode: true
+        in: query
+        name: deptId
+        required: true
+        schema:
+          format: int32
+          type: integer
+        style: form
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Employee'
+          description: OK
+      summary: Add Employee to department
+      tags:
+      - employee-controller
+      x-accepts:
+      - '*/*'
+  /employees:
+    get:
+      operationId: allEmployees
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                items:
+                  $ref: '#/components/schemas/Employee'
+                type: array
+          description: OK
+      summary: List all Employees
+      tags:
+      - employee-controller
+      x-accepts:
+      - '*/*'
+  /employees/top/salaries:
+    get:
+      operationId: topThreeHighestPaidEmployees
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                items:
+                  $ref: '#/components/schemas/SalariedEmployees'
+                type: array
+          description: OK
+      summary: Top Three salaried employees
+      tags:
+      - employee-controller
+      x-accepts:
+      - '*/*'
+  /employees/salary:
+    get:
+      operationId: employeesWithSalaryGreaterThan
+      parameters:
+      - description: Salary amount
+        explode: true
+        in: query
+        name: amount
+        required: true
+        schema:
+          format: double
+          type: number
+        style: form
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                type: object
+          description: OK
+      summary: Find Employees with salary greater than
+      tags:
+      - employee-controller
+      x-accepts:
+      - '*/*'
+  /employees/joined:
+    get:
+      operationId: employeesJoinedIn
+      parameters:
+      - description: "Search by year,month,week,day"
+        explode: true
+        in: query
+        name: key
+        required: true
+        schema:
+          type: string
+        style: form
+      - description: "value of year,month,week,day"
+        explode: true
+        in: query
+        name: value
+        required: true
+        schema:
+          format: int32
+          type: integer
+        style: form
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                type: object
+          description: OK
+      summary: Employee joined recently
+      tags:
+      - employee-controller
+      x-accepts:
+      - '*/*'
+  /employees/department:
+    get:
+      operationId: employeesInDepartment
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                items:
+                  type: object
+                type: array
+          description: OK
+      summary: Department employees count
+      tags:
+      - employee-controller
+      x-accepts:
+      - '*/*'
+  /employees/batch:
+    get:
+      operationId: employeesInBatch
+      parameters:
+      - description: Page number
+        explode: true
+        in: query
+        name: pageNo
+        required: false
+        schema:
+          default: 0
+          format: int32
+          type: integer
+        style: form
+      - description: Page size
+        explode: true
+        in: query
+        name: size
+        required: false
+        schema:
+          default: 20
+          format: int32
+          type: integer
+        style: form
+      - description: Column name by which employees need to be sorted
+        explode: true
+        in: query
+        name: sortBy
+        required: false
+        schema:
+          default: salary
+          type: string
+        style: form
+      - description: Id of the employee
+        explode: true
+        in: query
+        name: order
+        required: false
+        schema:
+          default: asc
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                type: object
+          description: OK
+      summary: Employees in Batch
+      tags:
+      - employee-controller
+      x-accepts:
+      - '*/*'
+  /departments:
+    get:
+      operationId: allDepartments
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                items:
+                  $ref: '#/components/schemas/Department'
+                type: array
+          description: OK
+      summary: List all Departments
+      tags:
+      - department-controller
+      x-accepts:
+      - '*/*'
+  /department/employees:
+    get:
+      operationId: employeesAndDepartment
+      parameters:
+      - description: Department name
+        explode: true
+        in: query
+        name: deptName
+        required: true
+        schema:
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                type: object
+          description: OK
+      summary: Department employees
+      tags:
+      - employee-controller
+      x-accepts:
+      - '*/*'
+  /department/{deptId}:
+    delete:
+      description: Department must exist
+      operationId: deleteDepartment
+      parameters:
+      - description: Id of the department to be deleted
+        explode: false
+        in: path
+        name: deptId
+        required: true
+        schema:
+          format: int32
+          type: integer
+        style: simple
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                type: string
+          description: OK
+      summary: Delete Department
+      tags:
+      - department-controller
+      x-accepts:
+      - '*/*'
+components:
+  schemas:
+    EmployeeDto:
+      example:
+        dateOfJoining: 2025-01-06
+        name: sivakrishna
+        salary: 15000
+        email: example@gmail.com
+      properties:
+        name:
+          description: Employee name
+          example: sivakrishna
+          type: string
+        email:
+          description: Employee email
+          example: example@gmail.com
+          type: string
+        salary:
+          description: Employee salary
+          example: 15000
+          format: int64
+          type: integer
+        dateOfJoining:
+          description: Employee joining date
+          example: 2025-01-06
+          format: date
+          type: string
+      required:
+      - dateOfJoining
+      - email
+      - name
+      - salary
+    Department:
+      example:
+        name: name
+        location: location
+        id: 1
+      properties:
+        id:
+          format: int32
+          type: integer
+        name:
+          type: string
+        location:
+          type: string
+    Employee:
+      example:
+        dateOfJoining: 2000-01-23
+        name: name
+        id: 0
+        departments:
+        - name: name
+          location: location
+          id: 1
+        - name: name
+          location: location
+          id: 1
+        salary: 6
+        email: email
+      properties:
+        id:
+          format: int32
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
+        salary:
+          format: int64
+          type: integer
+        dateOfJoining:
+          format: date
+          type: string
+        departments:
+          items:
+            $ref: '#/components/schemas/Department'
+          type: array
+    DepartmentDto:
+      example:
+        name: HR
+        location: BBSR
+      properties:
+        name:
+          description: Department name
+          example: HR
+          type: string
+        location:
+          description: Department location
+          example: BBSR
+          type: string
+      required:
+      - location
+      - name
+    SalariedEmployees:
+      example:
+        category: category
+        salary: 0
+        employees:
+        - dateOfJoining: 2000-01-23
+          name: name
+          id: 0
+          departments:
+          - name: name
+            location: location
+            id: 1
+          - name: name
+            location: location
+            id: 1
+          salary: 6
+          email: email
+        - dateOfJoining: 2000-01-23
+          name: name
+          id: 0
+          departments:
+          - name: name
+            location: location
+            id: 1
+          - name: name
+            location: location
+            id: 1
+          salary: 6
+          email: email
+      properties:
+        category:
+          type: string
+        salary:
+          format: int64
+          type: integer
+        employees:
+          items:
+            $ref: '#/components/schemas/Employee'
+          type: array
+

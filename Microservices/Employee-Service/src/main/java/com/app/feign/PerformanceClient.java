@@ -19,7 +19,7 @@ public interface PerformanceClient {
     public ResponseEntity<PerformanceDto> createPerformanceHandler(@RequestParam("empId") int employeeId,
                                                                    @RequestBody PerformanceDto performanceDto);
 
-    // View all employee performance
+    // View employee performance
     @GetMapping("employee")
     public ResponseEntity<List<PerformanceDto>> viewEmployeePerformanceHandler(@RequestParam("empId") int employeeId);
 

@@ -475,6 +475,9 @@ public class EmployeeServiceImpl implements EmployeeService {
         if(Objects.isNull(findEmployeeById(employeeId))) {
             throw new InvalidIdException("Employee not found with id: "+ employeeId);
         }
+        System.out.println("employee service calling performance service...");
+       List<PerformanceDto> employeePerformances = performanceClient.viewEmployeePerformanceHandler(employeeId).getBody();
+        System.out.println("Received details from performance services.");
         return performanceClient.viewEmployeePerformanceHandler(employeeId);
     }
 
