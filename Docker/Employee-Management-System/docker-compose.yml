@@ -1,16 +1,7 @@
 
 services:
-  app:
-    build: .
-    ports:
-      - "8080:8080"
-    networks:
-      em-system-network:
-    restart: on-failure
-    depends_on:
-      - mysql
 
-  mysql:
+  mmysql:
     container_name: mysqldb
     image: mysql
     environment:
@@ -18,8 +9,20 @@ services:
       MYSQL_DATABASE: employeedb
     networks:
       em-system-network:
+    restart: always
     volumes:
       - ems-data:/var/lib/mysql
+
+  app:
+    container_name: employee-backend-container
+    build: .
+    ports:
+      - "8080:8080"
+    networks:
+      em-system-network:
+    restart: always
+    depends_on:
+      - mmysql
 
 networks:
   em-system-network:
